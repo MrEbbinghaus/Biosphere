@@ -1,3 +1,4 @@
 (ns biosphere.config)
 
-(def scale 3)
+(def scale 4)
+(def water-level 0.4)
