@@ -1,0 +1,22 @@
+= Features
+
+Input / Output Neurons for the brain of the creatures.
+
+
+== Input
+- On Water?
+- Nutritional value
+- Temperature
+- Hunger
+- (Direction)
+- Something like eyes?
+- Pheromones?
+
+
+== Output
+- Forward
+- Backward
+- Turn left
+- Turn right
+- Eat
+- Reproduce
