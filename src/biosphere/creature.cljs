@@ -3,33 +3,49 @@
             [biosphere.config :as config]
             [biosphere.utils :as utils]))
 
-(defn turn [creature amt]
-  (update creature :creature/direction + amt))
+(defn new-rand
+  "Returns a creature add a random position, with a given `id`"
+  [id]
+  {::id id
+   ::x (rand-int (q/width))
+   ::y (rand-int (q/height))
+   ::speed 1
+   ::energy 50 ; of 100?
+   ::direction (rand-int 360)})
 
-(defn on-water? [state {:creature/keys [x y]}]
+(defn turn
+  "Turn `creature` by `amount` degrees. Positive is to the right, negative to the left."
+  [creature amount]
+  (update creature ::direction + amount))
+
+(defn on-water?
+  "Check if create is on water."
+  [state {::keys [x y]}]
   (let [pos (mapv #(utils/floor-to % config/scale) [x y])]
     (get-in state [:tiles pos :tile/water?])))
 
 
-(defn move [{:creature/keys [id speed direction x y] :as creature}]
-  (let [[vx vy] (utils/cart->polar speed (q/radians (- direction 90)))
-        new-x (mod (+ x vx) (q/width))
-        new-y (mod (+ y vy) (q/height))]
+(defn move
+  "Update the position of a create based on their speed, direct and current position."
+  [{::keys [speed direction x y] :as creature}]
+  (let [[dx dy] (utils/cart->polar speed direction)]
     (assoc creature
-      :creature/x new-x
-      :creature/y new-y)))
+      ::x (mod (+ x dx) (q/width))
+      ::y (mod (+ y dy) (q/height)))))
 
+(defn expend
+  "Expend `energy` from `creature`."
+  [creature energy]
+  (update creature ::energy - energy))
 
-
-(defn expend [creature energy]
-  (update creature :creature/energy - energy))
-
-(defn die? [creature]
-  (>= 0 (:creature/energy creature)))
+(defn dead?
+  "Checks if the `creature` is dead"
+  [creature]
+  (>= 0 (::energy creature)))
 
 (defn update-creature [state [id creature]]
-  (let [on-water? (on-water? state creature)]
-    (when-not (die? creature)
+  (when-not (dead? creature)
+    (let [on-water? (on-water? state creature)]
       [id
        (cond-> creature
          on-water? (expend 5)
@@ -45,11 +61,13 @@
   (update state :creatures
     #(into {} (map (partial update-creature state)) (vec %))))
 
-(defn draw-creature-body
-  ([x y w h] (draw-creature-body x y w h 0))
+(defn draw-triangle
+  "Draws a triangle at position [`x` `y`] with width `w`, optional height `h` and optional rotation of degrees `r`"
+  ([x y w] (draw-triangle x y w w 0))
+  ([x y w h] (draw-triangle x y w h 0))
   ([x y w h r]
    (q/with-translation [x y]
-     (q/with-rotation [(q/radians r)]
+     (q/with-rotation [r]
        (let [half-w (/ w 2)
              half-h (/ h 2)]
          (q/triangle
@@ -57,6 +75,5 @@
            0          (- (/ half-h 0.8)) ; top center
            half-w     half-h))))))       ; bottom right
 
-(defn draw-creature [{:creature/keys [x y direction]}]
-  (q/with-fill [0 256 256]
-    (draw-creature-body x y 3 3 direction)))
+(defn draw-creature [{::keys [x y direction]}]
+  (draw-triangle x y 3 3 direction))

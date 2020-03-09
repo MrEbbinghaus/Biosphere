@@ -18,6 +18,7 @@
   (q/frame-rate 60)
   ; Set color mode to HSB (HSV) instead of default RGB.
   (q/color-mode :hsb)
+  (q/angle-mode :degrees)
   ; setup function returns initial state. It contains
   ; circle color and position.
   {:tiles (gen-tiles)
@@ -25,17 +26,12 @@
                (q/with-graphics g
                  (q/background 0 0 100)
                  (q/color-mode :hsb)
-                 (q/no-stroke))
+                 (q/no-stroke)
+                 (q/fill 200))
                g)
 
-   :creatures (into {} (for [i (range 500)]
-                        [i
-                         #:creature{:id i
-                                    :x (rand-int (q/width))
-                                    :y (rand-int (q/height))
-                                    :speed 1
-                                    :energy 50 ;of 100?
-                                    :direction (rand-int 360)}]))})
+   :creatures (into {} (for [id (range 500)]
+                        [id (creature/new-rand id)]))})
 
 (defn update-state [state]
   (-> state
@@ -56,8 +52,9 @@
 
   (q/image (:tile-set state) 0 0)
 
-  (doseq [creature (vals (:creatures state))]
-    (creature/draw-creature creature))
+  (q/with-fill [0 256 256]
+    (doseq [creature (vals (:creatures state))]
+      (creature/draw-creature creature)))
 
   (q/with-fill 0
     (q/text (str "FPS: " (q/floor (q/current-frame-rate))) 10 10)))
