@@ -16,7 +16,9 @@ jobs:
      - name: Install dependencies
        run: lein deps
      - name: Build JS
-       run: lein do clean, cljsbuild once optimized
+       run: lein do clean, fig:publish
+     - name: Copy Files
+       run: mv target/public/cljs-out resources/public/
      - name: Deploy to GitHub Pages
        uses: crazy-max/ghaction-github-pages@v1.3.0
        with:

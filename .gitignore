@@ -11,4 +11,4 @@ figwheel_server.log
 .rebel_readline_history
 *.iml
 
-/resources/public/js/
+/resources/public/cljs-out/
