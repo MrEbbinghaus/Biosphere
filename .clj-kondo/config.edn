@@ -1,0 +1,14 @@
+{:lint-as {quil.core/defsketch clojure.core/def}
+ :linters {:misplaced-docstring {:level :error}
+           :unresolved-symbol {:exclude
+                               [(quil.core/defsketch)
+                                (biosphere.core/run-sketch)]}
+           :unused-binding      {:level :off}
+           :unused-referred-var {:level :off}
+           :unused-namespace    {:level :off}
+           :consistent-alias    {;; warn when alias for clojure.string is
+                                 ;; different from str
+                                 :aliases {quil.core          q
+                                           clojure.spec.alpha s
+                                           clojure.string     str
+                                           taoensso.timbre    log}}}}
