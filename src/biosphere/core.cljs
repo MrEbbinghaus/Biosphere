@@ -9,9 +9,9 @@
   (/ (* config/scale x) x))
 
 (defn gen-tiles []
-  (into {} (for [y (range 0 (q/height) (step-size (q/height)))
-                 x (range 0 (q/width) (step-size (q/width)))]
-             [[x y] (world/gen-tile x y)])))
+  (vec (for [y (range 0 (q/height) (step-size (q/height)))
+             x (range 0 (q/width) (step-size (q/width)))]
+         (world/gen-tile x y))))
 
 (defn setup []
   ; Set frame rate to 30 frames per second.
@@ -47,8 +47,7 @@
   ; Clear the sketch by filling it with light-grey color.
   (q/with-graphics (:tile-set state)
     (let [interlacing-factor 100]
-      (world/draw-tiles (interlaced interlacing-factor
-                          (->> state :tiles vals)))))
+      (world/draw-tiles (interlaced interlacing-factor (:tiles state)))))
 
   (q/image (:tile-set state) 0 0)
 

@@ -1,8 +1,7 @@
 (ns biosphere.world
   (:require [quil.core :as q]
-            [biosphere.config :as config]))
-
-(def water-color [150 255 255])
+            [biosphere.config :as config]
+            [biosphere.utils :as utils]))
 
 (defn gen-tile [x y]
   (let [noisiness   200
@@ -17,6 +16,12 @@
            :humidity humidity
            :water?   water?}))
 
+(defn pos->id [[x y]]
+  (let [x (utils/floor-to x config/scale)
+        y (utils/floor-to y config/scale)]
+    (/ (+ (* x config/scale)
+          (* y (q/width)))
+       (* config/scale config/scale))))
 
 (defn draw [{:tile/keys [x y humidity value water?]}]
   (let [color (if water?

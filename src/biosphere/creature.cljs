@@ -1,7 +1,7 @@
 (ns biosphere.creature
   (:require [quil.core :as q]
-            [biosphere.config :as config]
-            [biosphere.utils :as utils]))
+            [biosphere.utils :as utils]
+            [biosphere.world :as world]))
 
 (defn new-rand
   "Returns a creature add a random position, with a given `id`"
@@ -21,7 +21,7 @@
 (defn on-water?
   "Check if create is on water."
   [state {::keys [x y]}]
-  (let [pos (mapv #(utils/floor-to % config/scale) [x y])]
+  (let [pos (world/pos->id [x y])]
     (get-in state [:tiles pos :tile/water?])))
 
 
