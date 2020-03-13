@@ -59,10 +59,10 @@
     (q/text (str "FPS: " (q/floor (q/current-frame-rate))) 10 10)))
 
 ; this function is called in index.html
-(defn ^:export run-sketch []
+(defn ^:export run-sketch [host [width height]]
   (q/defsketch biosphere
-    :host "biosphere"
-    :size [1400 801]
+    :host host
+    :size [width height]
     ; setup function called only once, during sketch initialization.
     :setup setup
     ; update-state is called on each iteration before draw-state.
