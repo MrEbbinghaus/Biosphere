@@ -27,7 +27,7 @@
 (defn move
   "Update the position of a create based on their speed, direct and current position."
   [{::keys [speed direction x y] :as creature}]
-  (let [[dx dy] (utils/cart->polar speed (q/radians direction))]
+  (let [[dx dy] (utils/polar->cart speed (q/radians direction))]
     (assoc creature
       ::x (mod (+ x dx) (q/width))
       ::y (mod (+ y dy) (q/height)))))

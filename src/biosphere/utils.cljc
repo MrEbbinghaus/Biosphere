@@ -1,9 +1,9 @@
 (ns biosphere.utils)
 
-(defn cart->polar
+(defn polar->cart
   "Returns a vector with the x and y coordinates."
   [radius angle]
-  (let [angle (- angle 90)]
+  (let [angle (- angle (/ Math/PI 2))] ; -π/2 because our origin is top-left. Not bottom-right.
     [(* radius (Math/cos angle))
      (* radius (Math/sin angle))]))
 
