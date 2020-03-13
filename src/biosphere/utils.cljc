@@ -1,18 +1,17 @@
-(ns biosphere.utils
-  (:require [quil.core :as q]))
+(ns biosphere.utils)
 
 (defn cart->polar
   "Returns a vector with the x and y coordinates."
   [radius angle]
   (let [angle (- angle 90)]
-    [(* radius (q/cos angle))
-     (* radius (q/sin angle))]))
+    [(* radius (Math/cos angle))
+     (* radius (Math/sin angle))]))
 
 (defn floor-to
   "Floors `n` to the next whole number that is divisible by `d`"
   [n d]
   (let [r (rem n d)]
-    (q/round (- n r))))
+    (Math/round (- n r))))
 
 (defn rand-int-between
   "Returns an int between `min` (inclusive) and `max` (exclusive)"
