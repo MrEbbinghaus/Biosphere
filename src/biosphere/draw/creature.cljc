@@ -15,5 +15,5 @@
            0          (- (/ half-h 0.8)) ; top center
            half-w     half-h))))))       ; bottom right
 
-(defn draw-creature! [{::keys [x y direction]}]
+(defn draw-creature! [{:biosphere.creature/keys [x y direction]}]
   (draw-triangle! x y 3 3 direction))
