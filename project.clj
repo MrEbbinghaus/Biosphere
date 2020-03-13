@@ -7,10 +7,10 @@
                  [quil "3.1.0"]
                  [org.clojure/clojurescript "1.10.597"]]
 
+  :clean-targets ^{:protect false} ["target" "resources/public/cljs-out"]
   :profiles {:dev {:dependencies [[com.bhauman/figwheel-main "0.2.3"]
                                   [com.bhauman/rebel-readline-cljs "0.1.4"]]
-                   :resource-paths ["target" "resources"]
-                   :clean-targets ^{:protect false} ["target"]}}
+                   :resource-paths ["target" "resources"]}}
 
   :aliases {"fig"       ["trampoline" "run" "-m" "figwheel.main"]
             "fig:dev"   ["trampoline" "run" "-m" "figwheel.main" "-b" "biosphere" "-r"]
