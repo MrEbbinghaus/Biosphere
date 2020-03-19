@@ -1,12 +1,12 @@
-(ns biosphere.world
-  (:require [quil.core :as q]
-            [biosphere.config :as config]
+(ns biosphere.tiles
+  (:require [biosphere.config :as config]
             [biosphere.utils :as utils]))
 
-(defn gen-tile [x y]
-  (let [noisiness   200
-        water-level config/water-level
-        value       (q/noise (/ x noisiness) (/ y noisiness))
+(def noisiness 100)
+
+(defn gen-tile [x y noise]
+  (let [water-level config/water-level
+        value       (noise (/ x noisiness) (/ y noisiness))
         water?      (< value water-level)
         humidity    (if water? 0
                                (/ (- value water-level)
@@ -16,12 +16,11 @@
            :humidity humidity
            :water?   water?}))
 
+
 (defn pos->id [[x y]]
-  (let [x (utils/floor-to x config/scale)
-        y (utils/floor-to y config/scale)]
-    (/ (+ (* x config/scale)
-          (* y (q/width)))
-       (* config/scale config/scale))))
+  (let [x (Math/floor x)
+        y (Math/floor y)]
+    (+ x (* y config/width))))
 
 (defn update-tile [tile]
   tile)

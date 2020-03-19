@@ -1,6 +1,8 @@
 (ns biosphere.config)
 
-(def scale 4) ; size in pixel per tile 4-20 is an acceptable size for performance
 (def water-level 0.4)
-(def width 1000)
-(def height 600)
+
+(def no-of-creatures 300)
+(def speed 0.5)
+(def width 512)
+(def height 288)

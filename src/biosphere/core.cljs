@@ -2,17 +2,17 @@
   (:require [quil.core :as q :include-macros true]
             [quil.middleware :as m]
             [biosphere.creature :as creature]
-            [biosphere.world :as world]
+            [biosphere.tiles :as tiles]
             [biosphere.config :as config]
-            [biosphere.draw.core :as draw]))
-
-(defn step-size [x]
-  (/ (* config/scale x) x))
+            [biosphere.draw.core :as draw]
+            [biosphere.draw.tile :as draw-tiles]
+            [biosphere.draw.creature :as draw-creature]
+            [biosphere.utils :as util]))
 
 (defn gen-tiles []
-  (vec (for [y (range 0 (q/height) (step-size (q/height)))
-             x (range 0 (q/width) (step-size (q/width)))]
-         (world/gen-tile x y))))
+  (vec (for [y (range config/height)
+             x (range config/width)]
+         (tiles/gen-tile x y q/noise))))
 
 (defn setup []
   ; Set frame rate to 30 frames per second.
@@ -22,21 +22,34 @@
   (q/angle-mode :degrees)
   ; setup function returns initial state. It contains
   ; circle color and position.
-  {:tiles (gen-tiles)
-   :tile-graphic (let [g (q/create-graphics (q/width) (q/height))]
-                   (q/with-graphics g
-                     (q/background 0 0 100)
-                     (q/color-mode :hsb)
-                     (q/no-stroke)
-                     (q/fill 200))
-                   g)
+  {:resolution [(q/width) (q/height)]
+   :navigation-2d {:zoom 1}
 
-   :creatures (vec (for [_ (range 500)]
-                    (creature/new-rand)))})
+   :tiles        (gen-tiles)
+   :tile-graphic (draw-tiles/make-tile-graphics (q/width) (q/height))
+   :creature-graphic (draw-creature/make-graphic (q/width) (q/height))
+   :creatures    (vec (for [_ (range config/no-of-creatures)]
+                           (creature/new-rand)))})
+
+
+(defn keep-zoom-in-bounds [state]
+  (update-in state [:navigation-2d :zoom] q/constrain 1 2))
+
+(defn update-resolution [{:keys [resolution] :as state}]
+  (let [current-res [(util/floor-to (q/width) config/width)
+                     (util/floor-to (q/height) config/height)]]
+    (if (= current-res resolution)
+      state
+      (-> state
+        (assoc :tile-graphic (apply draw-tiles/make-tile-graphics current-res))
+        (assoc :creature-graphic (apply draw-creature/make-graphic current-res))
+        (assoc :resolution current-res)))))
 
 (defn update-state [state]
   (-> state
-    world/update-tiles
+    update-resolution
+    keep-zoom-in-bounds
+    tiles/update-tiles
     creature/update-creatures))
 
 ; this function is called in index.html

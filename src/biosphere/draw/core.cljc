@@ -3,13 +3,14 @@
             [biosphere.draw.creature :as creature]
             [biosphere.draw.tile :as tiles]))
 
+(defn draw-fps-counter! []
+  (q/fill 0)
+  (q/text (str "FPS: " (q/floor (q/current-frame-rate))) 2 10))
+
 (defn draw-state [state]
   ; Clear the sketch by filling it with light-grey color.
+  (q/background 230)
   (tiles/draw-tiles! state)
+  (creature/draw-creatures! state)
 
-  (q/with-fill [0 256 256]
-    (doseq [creature (:creatures state)]
-      (creature/draw-creature! creature)))
-
-  (q/with-fill 0
-    (q/text (str "FPS: " (q/floor (q/current-frame-rate))) 10 10)))
+  (draw-fps-counter!))
