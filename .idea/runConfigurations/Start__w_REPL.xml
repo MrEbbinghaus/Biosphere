@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="repl" type="ClojureREPL" factoryName="Local" activateToolWindowBeforeRun="false" singleton="true">
+  <configuration default="false" name="Start \w REPL" type="ClojureREPL" factoryName="Local" activateToolWindowBeforeRun="false" singleton="true">
     <module name="biosphere" />
     <setting name="replType" value="CLOJURE_MAIN" />
     <setting name="execution" value="LEININGEN" />
