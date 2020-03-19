@@ -14,12 +14,12 @@
       (q/fill 200))
     g))
 
-(defn tile-color [{:tile/keys [humidity value water?]}]
+(defn tile-color [{:tile/keys [fertility value water?]}]
   (if water?
-    (q/lerp-color (q/color 170 255 150) (q/color 150 120 255) (* (/ 1 config/water-level) value))
-    (q/lerp-color (q/color 90 150 150) (q/color 0 255 255) humidity)))
+    (q/lerp-color (q/color 170 255 150) (q/color 150 120 255) (* value (/ 1 config/water-level)))
+    (q/lerp-color (q/color 90 150 150) (q/color 0 255 255) fertility)))
 
-(defn draw! [state {:tile/keys [x y humidity value water?] :as tile}]
+(defn draw! [state {:tile/keys [x y fertility value water?] :as tile}]
   (let [[res-x res-y] (:resolution state)]
     (q/fill (tile-color tile))
     (q/rect

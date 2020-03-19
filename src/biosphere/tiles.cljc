@@ -11,10 +11,10 @@
         humidity    (if water? 0
                                (/ (- value water-level)
                                  (- 1 water-level)))]
-    #:tile{:x        x :y y
-           :value    value
-           :humidity humidity
-           :water?   water?}))
+    #:tile{:x         x :y y
+           :value     value
+           :fertility humidity
+           :water?    water?}))
 
 
 (defn pos->id [[x y]]
