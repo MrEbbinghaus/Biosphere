@@ -7,12 +7,20 @@
             [biosphere.draw.core :as draw]
             [biosphere.draw.tile :as draw-tiles]
             [biosphere.draw.creature :as draw-creature]
-            [biosphere.utils :as util]))
+            [biosphere.utils :as util]
+            [clojure.string :as str])
+  (:import [goog Uri]))
 
 (defn gen-tiles []
   (vec (for [y (range config/height)
              x (range config/width)]
          (tiles/gen-tile x y q/noise))))
+
+(defn get-query []
+  (into {}
+    (for [kv-vec (-> js/window .-location .-href Uri. .getDecodedQuery (str/split #"&"))
+          :let [[k v] (str/split kv-vec #"=")]]
+      [(keyword k) v])))
 
 (defn setup []
   ; Set frame rate to 30 frames per second.
@@ -20,6 +28,7 @@
   ; Set color mode to HSB (HSV) instead of default RGB.
   (q/color-mode :hsb)
   (q/angle-mode :degrees)
+  (some-> (get (get-query) :seed) q/noise-seed)
   ; setup function returns initial state. It contains
   ; circle color and position.
   {:resolution [(q/width) (q/height)]
