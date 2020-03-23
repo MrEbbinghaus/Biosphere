@@ -4,23 +4,20 @@
 
 (defn draw-triangle!
   "Draws a triangle at position [`x` `y`] with width `w`, optional height `h` and optional rotation of degrees `r`"
-  ([w] (draw-triangle! w w 0))
-  ([w h] (draw-triangle! w h 0))
-  ([w h r]
-   (q/with-rotation [(q/radians r)]
-     (let [half-w (/ w 2)
-           half-h (/ h 2)]
-       (q/triangle
-         (- half-w) half-h             ; bottom left
-         0          (- (/ half-h 0.8)) ; top center
-         half-w     half-h)))))        ; bottom right
+  ([w] (draw-triangle! w w))
+  ([w h]
+   (let [half-w (/ w 2)
+         half-h (/ h 2)]
+     (q/triangle
+       (- half-w) half-h             ; bottom left
+       0          (- (/ half-h 0.8)) ; top center
+       half-w     half-h))))        ; bottom right
 
-(defn draw-creature! [{:keys [resolution] :as state} {:biosphere.creature/keys [x y direction] :as creature}]
+(defn draw-creature! [{:keys [resolution]} {:biosphere.creature/keys [x y direction]}]
   (q/with-translation [(q/map-range x 0 config/width 0 (first resolution))
                        (q/map-range y 0 config/height 0 (second resolution))]
-    (draw-triangle!
-      5 5
-      direction)))
+    (q/with-rotation [(q/radians direction)]
+      (draw-triangle! 5 5))))
 
 (defn make-graphic [width height]
   (let [g (q/create-graphics width height)]
@@ -34,7 +31,6 @@
   (q/with-graphics creature-graphic
     (q/clear)
     (q/with-fill [0 256 0]
-      (doseq [creature (vals creatures)]
-        (draw-creature! state creature))))
+      (run! (partial draw-creature! state) (vals creatures))))
 
   (q/image creature-graphic 0 0))
