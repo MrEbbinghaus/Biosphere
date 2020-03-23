@@ -34,7 +34,7 @@
   (q/with-graphics creature-graphic
     (q/clear)
     (q/with-fill [0 256 0]
-      (doseq [creature creatures]
+      (doseq [creature (vals creatures)]
         (draw-creature! state creature))))
 
   (q/image creature-graphic 0 0))

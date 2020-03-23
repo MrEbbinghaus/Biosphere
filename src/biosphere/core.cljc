@@ -39,8 +39,9 @@
    :tiles        (gen-tiles)
    :tile-graphic (draw-tiles/make-tile-graphics (q/width) (q/height))
    :creature-graphic (draw-creature/make-graphic (q/width) (q/height))
-   :creatures    (vec (for [_ (range config/no-of-creatures)]
-                           (creature/new-rand)))})
+   :creatures    (into {}
+                   (for [id (range config/no-of-creatures)]
+                     [id (creature/new-rand id)]))})
 
 
 (defn keep-zoom-in-bounds [state]

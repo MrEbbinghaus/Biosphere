@@ -6,8 +6,9 @@
 
 (defn new-rand
   "Returns a creature add a random position, with a given `id`"
-  []
-  {::x (rand-int config/width)
+  [id]
+  {::id id
+   ::x (rand-int config/width)
    ::y (rand-int config/height)
    ::speed config/speed
    ::energy 50 ; of 100?
@@ -43,23 +44,20 @@
   [creature]
   (>= 0 (::energy creature)))
 
-(defn update-creature [state creature]
-  (when-not (dead? creature)
-    (let [on-water? (on-water? state creature)]
-      (cond-> creature
-        on-water? (expend 5)
-        on-water? (turn 180)
+(defn update-creature [state creature-id]
+  (let [creature (get-in state [:creatures creature-id])]
+    (if (dead? creature)
+      (update state :creatures dissoc creature-id)
+      (let [on-water? (on-water? state creature)]
+        (assoc-in state [:creatures creature-id]
+          (cond-> creature
+            on-water? (expend 5)
+            on-water? (turn 180)
 
-         (utils/chance 30) (turn (utils/rand-int-between -10 10))
+             (utils/chance 30) (turn (utils/rand-int-between -10 10))
 
-        :always (move)
-        :always (expend -1)))))
+            :always (move)
+            :always (expend -1)))))))
 
 (defn update-creatures [state]
-  (update state :creatures
-    (fn [creatures]
-      (into []
-        (comp
-          (map (partial update-creature state))
-          (remove nil?))
-        creatures))))
+  (reduce update-creature state (-> state :creatures keys)))
