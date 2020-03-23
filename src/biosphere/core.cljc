@@ -9,26 +9,28 @@
             [biosphere.draw.creature :as draw-creature]
             [biosphere.utils :as util]
             [clojure.string :as str])
-  (:import [goog Uri]))
+  #?(:cljs (:import [goog Uri])))
 
 (defn gen-tiles []
   (vec (for [y (range config/height)
              x (range config/width)]
          (tiles/gen-tile x y q/noise))))
 
-(defn get-query []
-  (into {}
-    (for [kv-vec (-> js/window .-location .-href Uri. .getDecodedQuery (str/split #"&"))
-          :let [[k v] (str/split kv-vec #"=")]]
-      [(keyword k) v])))
+#?(:cljs
+   (defn get-query []
+     (into {}
+       (for [kv-vec (-> js/window .-location .-href Uri. .getDecodedQuery (str/split #"&"))
+             :let [[k v] (str/split kv-vec #"=")]]
+         [(keyword k) v]))))
 
 (defn setup []
   ; Set frame rate to 30 frames per second.
-  (q/frame-rate 60)
+  (q/frame-rate 30)
   ; Set color mode to HSB (HSV) instead of default RGB.
-  (q/color-mode :hsb)
-  (q/angle-mode :degrees)
-  (some-> (get (get-query) :seed) q/noise-seed)
+  #?@(:cljs
+      [(q/color-mode :hsb)
+       (q/angle-mode :degrees)
+       (some-> (get (get-query) :seed) q/noise-seed)])
   ; setup function returns initial state. It contains
   ; circle color and position.
   {:resolution [(q/width) (q/height)]
@@ -64,7 +66,7 @@
 ; this function is called in index.html
 (defn ^:export run-sketch [host [width height]]
   (q/defsketch biosphere
-    :host host
+    #?@(:cljs [:host host])
     :size [width height]
     ; setup function called only once, during sketch initialization.
     :setup setup
