@@ -1,4 +1,5 @@
-(ns biosphere.utils)
+(ns biosphere.utils
+  (:require [quil.core :as q]))
 
 (defn polar->cart
   "Returns a vector with the x and y coordinates."
@@ -23,3 +24,13 @@
   "Rolls a against a dice (default: d=100) and returns true if the throw is above `percentage`."
   ([percentage] (chance 100 percentage))
   ([d percentage] (> (rand-int d) percentage)))
+
+(defmacro with-transform [{:keys [transform rotation scale]} & body]
+   `(do
+      (q/push-matrix)
+      (some-> ~transform q/translate)
+      (some-> ~rotation q/rotate)
+      (some-> ~scale q/scale)
+
+      (do ~@body)
+      (q/pop-matrix)))
