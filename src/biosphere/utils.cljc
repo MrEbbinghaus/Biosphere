@@ -25,12 +25,14 @@
   ([percentage] (chance 100 percentage))
   ([d percentage] (> (rand-int d) percentage)))
 
-(defmacro with-transform [{:keys [transform rotation scale]} & body]
-   `(do
-      (q/push-matrix)
-      (some-> ~transform q/translate)
-      (some-> ~rotation q/rotate)
-      (some-> ~scale q/scale)
-
-      (do ~@body)
-      (q/pop-matrix)))
+#?(:clj
+    (defmacro with-transform [{:keys [translate rotate scale]} & body]
+       `(do
+          (q/push-matrix)
+          (try
+            (some-> ~translate q/translate)
+            (some-> ~rotate q/rotate)
+            (some-> ~scale q/scale)
+            ~@body
+            (finally
+              (quil.core/pop-matrix))))))

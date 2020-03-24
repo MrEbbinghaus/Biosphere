@@ -1,19 +1,21 @@
 (ns biosphere.draw.creature
   (:require [quil.core :as q]
             [biosphere.config :as config]
-            [biosphere.utils :as util]))
+            [biosphere.utils :as util :include-macros true]))
 
 (defn draw-creature! [{:keys [resolution]} {:biosphere.creature/keys [x y direction]}]
-  (util/with-transform
-    {:transform [(q/map-range x 0 config/width 0 (first resolution))
-                 (q/map-range y 0 config/height 0 (second resolution))]
-     :rotation (q/radians direction)
-     :scale 4}
-    (q/with-fill [0 256 0]
-      (q/triangle
-        -1 1     ; top left
-        0 -1     ; bottom center
-        1  1)))) ; top right
+  (let
+    [x (-> x (/ config/width) (* (first resolution)))
+     y (-> y (/ config/height) (* (second resolution)))]
+    (util/with-transform
+      {:translate [x y]
+       :rotate (q/radians direction)
+       :scale 4}
+      (q/with-fill [0 256 0]
+        (q/triangle
+          -1 1      ; top left
+          0 -1      ; bottom center
+          1  1))))) ; top right
 
 (defn make-graphic [width height]
   (let [g (q/create-graphics width height)]
