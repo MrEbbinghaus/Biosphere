@@ -5,7 +5,11 @@
 
 (defn draw-fps-counter! []
   (q/fill 0)
-  (q/text (str "FPS: " (q/floor (q/current-frame-rate))) 2 10))
+  (q/text (str "FPS: " (q/floor (q/current-frame-rate))) 2 12))
+
+(defn draw-seed! [{:keys [seed]}]
+  (q/fill 0)
+  (q/text (str "Seed: " seed) 2 25))
 
 (defn draw-state [state]
   ; Clear the sketch by filling it with light-grey color.
@@ -13,4 +17,5 @@
   (tiles/draw-tiles! state)
   (creature/draw-creatures! state)
 
-  (draw-fps-counter!))
+  (draw-fps-counter!)
+  (draw-seed! state))

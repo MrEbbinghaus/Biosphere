@@ -23,25 +23,28 @@
              :let [[k v] (str/split kv-vec #"=")]]
          [(keyword k) v]))))
 
-(defn setup []
-  ; Set frame rate to 30 frames per second.
-  (q/frame-rate 30)
-  ; Set color mode to HSB (HSV) instead of default RGB.
-  #?@(:cljs
-      [(q/color-mode :hsb)
-       (q/angle-mode :degrees)
-       (some-> (get (get-query) :seed) q/noise-seed)])
-  ; setup function returns initial state. It contains
-  ; circle color and position.
-  {:resolution [(q/width) (q/height)]
-   :navigation-2d {:zoom 1}
+(defn gen-map-seed [] (rand-int 1000))
 
-   :tiles        (gen-tiles)
-   :tile-graphic (draw-tiles/make-tile-graphics (q/width) (q/height))
-   :creature-graphic (draw-creature/make-graphic (q/width) (q/height))
-   :creatures    (into {}
-                   (for [id (range config/no-of-creatures)]
-                     [id (creature/new-rand id)]))})
+(defn setup []
+  (let [seed (or #?(:cljs (:seed (get-query)))
+               (gen-map-seed))]
+    ; Set frame rate to 30 frames per second.
+    (q/frame-rate 30)
+    ; Set color mode to HSB (HSV) instead of default RGB.
+    (q/color-mode :hsb)
+    (q/noise-seed seed)
+    ; setup function returns initial state. It contains
+    ; circle color and position.
+    {:resolution [(q/width) (q/height)]
+     :navigation-2d {:zoom 1}
+     :seed seed
+
+     :tiles        (gen-tiles)
+     :tile-graphic (draw-tiles/make-tile-graphics (q/width) (q/height))
+     :creature-graphic (draw-creature/make-graphic (q/width) (q/height))
+     :creatures    (into {}
+                     (for [id (range config/no-of-creatures)]
+                       [id (creature/new-rand id)]))}))
 
 
 (defn keep-zoom-in-bounds [state]
