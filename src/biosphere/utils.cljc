@@ -36,3 +36,9 @@
             ~@body
             (finally
               (quil.core/pop-matrix))))))
+
+(defn dark-mode?
+  "Checks for prefers-color-scheme: dark. (clj always returns true)"
+  []
+  #?(:clj false
+     :cljs (and (-> js/window .-matchMedia) (-> js/window (.matchMedia "(prefers-color-scheme: dark)") .-matches))))
