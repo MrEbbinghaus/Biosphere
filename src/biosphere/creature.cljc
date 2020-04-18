@@ -5,7 +5,7 @@
             [biosphere.config :as config]))
 
 (defn new-rand
-  "Returns a creature add a random position, with a given `id`"
+  "Returns a creature at a random position, with a given `id`"
   [id]
   {::id id
    ::x (rand-int config/width)
@@ -14,20 +14,25 @@
    ::energy 50 ; of 100?
    ::direction (rand-int 360)})
 
+(defn get-creature
+  "Get creature from `state` by `id`"
+  [state id]
+  (get-in state [:creatures id]))
+
 (defn turn
   "Turn `creature` by `amount` degrees. Positive is to the right, negative to the left."
   [creature amount]
   (update creature ::direction #(-> % (+ amount) (mod 360))))
 
 (defn on-water?
-  "Check if create is on water."
+  "Check if creature is on water."
   [state {::keys [x y]}]
-  (let [pos (tiles/pos->id [x y])]
-    (get-in state [:tiles pos :tile/water?])))
+  (let [index (tiles/pos->id [x y])]
+    (get-in state [:tiles index :tile/water?])))
 
 
 (defn move
-  "Update the position of a create based on their speed, direct and current position."
+  "Update the position of a creature based on their speed, direct and current position."
   [{::keys [speed direction x y] :as creature}]
   (let [[dx dy] (utils/polar->cart speed (q/radians direction))]
     (assoc creature
