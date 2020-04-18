@@ -1,6 +1,5 @@
 (ns biosphere.tiles
-  (:require [biosphere.config :as config]
-            [biosphere.utils :as utils]))
+  (:require [biosphere.config :as config]))
 
 (def noisiness 100)
 
@@ -13,11 +12,13 @@
                                  (- 1 water-level)))]
     #:tile{:x         x :y y
            :value     value
-           :fertility humidity
+           :fertility value
            :water?    water?}))
 
 
-(defn pos->id [[x y]]
+(defn pos->id
+  "Get the vector index from a `[x y]` 2D world position."
+  [[x y]]
   (let [x (Math/floor x)
         y (Math/floor y)]
     (+ x (* y config/width))))
