@@ -4,15 +4,20 @@
             [biosphere.tiles :as tiles]
             [biosphere.config :as config]))
 
+(defrecord Creature
+  [id
+   x y direction
+   speed
+   energy])
+
 (defn new-rand
   "Returns a creature at a random position, with a given `id`"
   [id]
-  {::id id
-   ::x (rand-int config/width)
-   ::y (rand-int config/height)
-   ::speed config/speed
-   ::energy 50 ; of 100?
-   ::direction (rand-int 360)})
+  (->Creature
+    id
+    (rand-int config/width) (rand-int config/height) (rand-int 360)
+    config/speed
+    50))
 
 (defn get-creature
   "Get creature from `state` by `id`"
@@ -22,35 +27,36 @@
 (defn turn
   "Turn `creature` by `amount` degrees. Positive is to the right, negative to the left."
   [creature amount]
-  (update creature ::direction #(-> % (+ amount) (mod 360))))
+  (update creature :direction #(-> % (+ amount) (mod 360))))
 
 (defn on-water?
   "Check if creature is on water."
-  [state {::keys [x y]}]
+  [state {:keys [x y]}]
   (let [index (tiles/pos->id [x y])]
     (get-in state [:tiles index :tile/water?])))
 
 
 (defn move
   "Update the position of a creature based on their speed, direct and current position."
-  [{::keys [speed direction x y] :as creature}]
+  [{:keys [speed direction x y] :as creature}]
   (let [[dx dy] (utils/polar->cart speed (q/radians direction))]
     (assoc creature
-      ::x (mod (+ x dx) config/width)
-      ::y (mod (+ y dy) config/height))))
+      :x (mod (+ x dx) config/width)
+      :y (mod (+ y dy) config/height))))
 
 (defn expend
   "Expend `energy` from `creature`."
   [creature energy]
-  (update creature ::energy - energy))
+  (update creature :energy - energy))
 
 (defn dead?
   "Checks if the `creature` is dead"
   [creature]
-  (>= 0 (::energy creature)))
+  (>= 0 (:energy creature)))
 
 (defn update-creature [state creature-id]
   (let [creature (get-in state [:creatures creature-id])]
+    #_(when (= 1 creature-id) (println creature))
     (if (dead? creature)
       (update state :creatures dissoc creature-id)
       (let [on-water? (on-water? state creature)]
