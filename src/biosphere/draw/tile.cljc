@@ -25,13 +25,59 @@
     (water-color (* value (/ 1 config/water-level)))
     (land-color (- value config/water-level))))
 
-(defn draw! [state {:tile/keys [x y] :as tile}]
-  (let [[res-x res-y] (:resolution state)]
-    (q/fill (tile-color tile))
+(defn hexagon [x y width]
+  (let [height (* width 0.57735)]
     (q/rect
-      (* x (/ res-x config/width))
-      (* y (/ res-y config/height))
-      (/ res-x config/width) (/ res-y config/height))))
+      x y
+      width
+      height)
+
+    (q/triangle
+      x y
+      (+ x width) y
+      (+ x (/ width 2)) (- y (/ height 2)))
+
+    (q/triangle
+      x (+ y height)
+      (+ x width) (+ y height)
+      (+ x (/ width 2)) (+ y height (/ height 2)))))
+
+
+(defn draw! [state {:tile/keys [x y] :as tile}]
+  (let [[res-x res-y] (:resolution state)
+        rx (* x (/ res-x config/width))
+        ry (* y (/ res-y config/height))
+
+        rect-width (/ res-x config/width)
+        rect-height (/ res-y config/height)
+
+        h  (/ rect-width 3)]
+    (q/fill (tile-color tile))
+    (if (even? y)
+      (hexagon rx ry rect-width)
+      (hexagon (+ rx (/ rect-width 2)) ry rect-width))
+    #_(when (and (= x (/ res-x config/width))
+              (= y (/ res-y config/height)))
+        (do
+          (q/fill (tile-color tile))
+          (hexagon rx ry rect-width))
+        #_(do
+            (q/fill (tile-color tile))
+            (q/rect
+              rx ry
+              rect-width
+              rect-height)
+            (q/triangle
+              rx ry
+
+              (+ rx (/ res-x config/width))
+              ry
+
+              (+ rx (/ rect-width 2))
+              (- (* y (/ res-y config/height)) h))))))
+
+
+
 
 (defn interlaced [factor coll]
   (let [cyc (mod (q/frame-count) factor)]
