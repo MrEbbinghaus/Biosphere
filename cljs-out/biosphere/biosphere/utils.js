@@ -1,4 +1,4 @@
-// Compiled by ClojureScript 1.10.597 {:static-fns true, :optimize-constants true}
+// Compiled by ClojureScript 1.10.866 {:static-fns true, :optimize-constants true, :optimizations :advanced}
 goog.provide('biosphere.utils');
 goog.require('cljs.core');
 goog.require('cljs.core.constants');
@@ -15,8 +15,8 @@ return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMP
  */
 biosphere.utils.floor_to = (function biosphere$utils$floor_to(n,d){
 var r = cljs.core.rem(n,d);
-var G__12913 = (n - r);
-return Math.round(G__12913);
+var G__13861 = (n - r);
+return Math.round(G__13861);
 });
 /**
  * Returns an int between `min` (inclusive) and `max` (exclusive)
@@ -28,8 +28,8 @@ return (min + cljs.core.rand_int((max - min)));
  * Rolls a against a dice (default: d=100) and returns true if the throw is above `percentage`.
  */
 biosphere.utils.chance = (function biosphere$utils$chance(var_args){
-var G__12915 = arguments.length;
-switch (G__12915) {
+var G__13863 = arguments.length;
+switch (G__13863) {
 case 1:
 return biosphere.utils.chance.cljs$core$IFn$_invoke$arity$1((arguments[(0)]));
 
@@ -58,10 +58,10 @@ return (cljs.core.rand_int(d) > percentage);
  * Checks for prefers-color-scheme: dark. (clj always returns true)
  */
 biosphere.utils.dark_mode_QMARK_ = (function biosphere$utils$dark_mode_QMARK_(){
-var and__4174__auto__ = window.matchMedia;
-if(cljs.core.truth_(and__4174__auto__)){
+var and__4221__auto__ = window.matchMedia;
+if(cljs.core.truth_(and__4221__auto__)){
 return window.matchMedia("(prefers-color-scheme: dark)").matches;
 } else {
-return and__4174__auto__;
+return and__4221__auto__;
 }
 });

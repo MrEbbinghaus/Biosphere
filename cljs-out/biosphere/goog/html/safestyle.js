@@ -1,16 +1,8 @@
-// Copyright 2014 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview The SafeStyle type and its builders.
@@ -23,23 +15,23 @@ goog.provide('goog.html.SafeStyle');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.html.SafeUrl');
-goog.require('goog.string');
 goog.require('goog.string.Const');
 goog.require('goog.string.TypedString');
+goog.require('goog.string.internal');
 
 
 
 /**
  * A string-like object which represents a sequence of CSS declarations
- * ({@code propertyName1: propertyvalue1; propertyName2: propertyValue2; ...})
+ * (`propertyName1: propertyvalue1; propertyName2: propertyValue2; ...`)
  * and that carries the security type contract that its value, as a string,
  * will not cause untrusted script execution (XSS) when evaluated as CSS in a
  * browser.
  *
  * Instances of this type must be created via the factory methods
- * ({@code goog.html.SafeStyle.create} or
- * {@code goog.html.SafeStyle.fromConstant}) and not by invoking its
- * constructor. The constructor intentionally takes no parameters and the type
+ * (`goog.html.SafeStyle.create` or `goog.html.SafeStyle.fromConstant`)
+ * and not by invoking its constructor. The constructor intentionally takes an
+ * extra parameter that cannot be constructed outside of this file and the type
  * is immutable; hence only a default instance corresponding to the empty string
  * can be obtained via constructor invocation.
  *
@@ -53,7 +45,7 @@ goog.require('goog.string.TypedString');
  *       interpolation. The SafeStyle string is also guaranteed not to be able
  *       to introduce new properties or elide existing ones.
  *   <li>Interpolated as the content of a {}-wrapped block within an HTML
- *       <style> element. '<' characters in the SafeStyle string
+ *       &lt;style&gt; element. '<' characters in the SafeStyle string
  *       *must be CSS-escaped* before interpolation.
  *   <li>Assigned to the style property of a DOM node. The SafeStyle string
  *       should not be escaped before being assigned to the property.
@@ -62,7 +54,7 @@ goog.require('goog.string.TypedString');
  * A SafeStyle may never contain literal angle brackets. Otherwise, it could
  * be unsafe to place a SafeStyle into a &lt;style&gt; tag (where it can't
  * be HTML escaped). For example, if the SafeStyle containing
- * "{@code font: 'foo &lt;style/&gt;&lt;script&gt;evil&lt;/script&gt;'}" were
+ * `font: 'foo &lt;style/&gt;&lt;script&gt;evil&lt;/script&gt;'` were
  * interpolated within a &lt;style&gt; tag, this would then break out of the
  * style context into HTML.
  *
@@ -72,17 +64,17 @@ goog.require('goog.string.TypedString');
  * would escape from the style attribute).
  *
  * Values of this type must be composable, i.e. for any two values
- * {@code style1} and {@code style2} of this type,
- * {@code goog.html.SafeStyle.unwrap(style1) +
- * goog.html.SafeStyle.unwrap(style2)} must itself be a value that satisfies
+ * `style1` and `style2` of this type,
+ * `goog.html.SafeStyle.unwrap(style1) +
+ * goog.html.SafeStyle.unwrap(style2)` must itself be a value that satisfies
  * the SafeStyle type constraint. This requirement implies that for any value
- * {@code style} of this type, {@code goog.html.SafeStyle.unwrap(style)} must
+ * `style` of this type, `goog.html.SafeStyle.unwrap(style)` must
  * not end in a "property value" or "property name" context. For example,
- * a value of {@code background:url("} or {@code font-} would not satisfy the
+ * a value of `background:url("` or `font-` would not satisfy the
  * SafeStyle contract. This is because concatenating such strings with a
  * second value that itself does not contain unsafe CSS can result in an
- * overall string that does. For example, if {@code javascript:evil())"} is
- * appended to {@code background:url("}, the resulting string may result in
+ * overall string that does. For example, if `javascript:evil())"` is
+ * appended to `background:url("}, the resulting string may result in
  * the execution of a malicious script.
  *
  * TODO(mlourenco): Consider whether we should implement UTF-8 interchange
@@ -110,28 +102,25 @@ goog.require('goog.string.TypedString');
  * @see goog.html.SafeStyle#create
  * @see goog.html.SafeStyle#fromConstant
  * @see http://www.w3.org/TR/css3-syntax/
- * @constructor
  * @final
  * @struct
  * @implements {goog.string.TypedString}
  */
-goog.html.SafeStyle = function() {
+goog.html.SafeStyle = class {
   /**
-   * The contained value of this SafeStyle.  The field has a purposely
-   * ugly name to make (non-compiled) code that attempts to directly access this
-   * field stand out.
-   * @private {string}
+   * @param {string} value
+   * @param {!Object} token package-internal implementation detail.
    */
-  this.privateDoNotAccessOrElseSafeStyleWrappedValue_ = '';
-
-  /**
-   * A type marker used to implement additional run-time type checking.
-   * @see goog.html.SafeStyle#unwrap
-   * @const {!Object}
-   * @private
-   */
-  this.SAFE_STYLE_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ =
-      goog.html.SafeStyle.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_;
+  constructor(value, token) {
+    /**
+     * The contained value of this SafeStyle.  The field has a purposely
+     * ugly name to make (non-compiled) code that attempts to directly access
+     * this field stand out.
+     * @private {string}
+     */
+    this.privateDoNotAccessOrElseSafeStyleWrappedValue_ =
+        (token === goog.html.SafeStyle.CONSTRUCTOR_TOKEN_PRIVATE_) ? value : '';
+  }
 };
 
 
@@ -143,44 +132,35 @@ goog.html.SafeStyle.prototype.implementsGoogStringTypedString = true;
 
 
 /**
- * Type marker for the SafeStyle type, used to implement additional
- * run-time type checking.
- * @const {!Object}
- * @private
- */
-goog.html.SafeStyle.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ = {};
-
-
-/**
  * Creates a SafeStyle object from a compile-time constant string.
  *
- * {@code style} should be in the format
- * {@code name: value; [name: value; ...]} and must not have any < or >
+ * `style` should be in the format
+ * `name: value; [name: value; ...]` and must not have any < or >
  * characters in it. This is so that SafeStyle's contract is preserved,
  * allowing the SafeStyle to correctly be interpreted as a sequence of CSS
  * declarations and without affecting the syntactic structure of any
  * surrounding CSS and HTML.
  *
- * This method performs basic sanity checks on the format of {@code style}
- * but does not constrain the format of {@code name} and {@code value}, except
+ * This method performs basic sanity checks on the format of `style`
+ * but does not constrain the format of `name` and `value`, except
  * for disallowing tag characters.
  *
  * @param {!goog.string.Const} style A compile-time-constant string from which
  *     to create a SafeStyle.
  * @return {!goog.html.SafeStyle} A SafeStyle object initialized to
- *     {@code style}.
+ *     `style`.
  */
 goog.html.SafeStyle.fromConstant = function(style) {
+  'use strict';
   var styleString = goog.string.Const.unwrap(style);
   if (styleString.length === 0) {
     return goog.html.SafeStyle.EMPTY;
   }
-  goog.html.SafeStyle.checkStyle_(styleString);
   goog.asserts.assert(
-      goog.string.endsWith(styleString, ';'),
+      goog.string.internal.endsWith(styleString, ';'),
       'Last character of style string is not \';\': ' + styleString);
   goog.asserts.assert(
-      goog.string.contains(styleString, ':'),
+      goog.string.internal.contains(styleString, ':'),
       'Style string must contain at least one \':\', to ' +
           'specify a "name: value" pair: ' + styleString);
   return goog.html.SafeStyle.createSafeStyleSecurityPrivateDoNotAccessOrElse(
@@ -189,21 +169,10 @@ goog.html.SafeStyle.fromConstant = function(style) {
 
 
 /**
- * Checks if the style definition is valid.
- * @param {string} style
- * @private
- */
-goog.html.SafeStyle.checkStyle_ = function(style) {
-  goog.asserts.assert(
-      !/[<>]/.test(style), 'Forbidden characters in style string: ' + style);
-};
-
-
-/**
  * Returns this SafeStyle's value as a string.
  *
  * IMPORTANT: In code where it is security relevant that an object's type is
- * indeed {@code SafeStyle}, use {@code goog.html.SafeStyle.unwrap} instead of
+ * indeed `SafeStyle`, use `goog.html.SafeStyle.unwrap` instead of
  * this method. If in doubt, assume that it's security relevant. In particular,
  * note that goog.html functions which return a goog.html type do not guarantee
  * the returned instance is of the right type. For example:
@@ -221,6 +190,7 @@ goog.html.SafeStyle.checkStyle_ = function(style) {
  * @override
  */
 goog.html.SafeStyle.prototype.getTypedStringValue = function() {
+  'use strict';
   return this.privateDoNotAccessOrElseSafeStyleWrappedValue_;
 };
 
@@ -230,12 +200,13 @@ if (goog.DEBUG) {
    * Returns a debug string-representation of this value.
    *
    * To obtain the actual string value wrapped in a SafeStyle, use
-   * {@code goog.html.SafeStyle.unwrap}.
+   * `goog.html.SafeStyle.unwrap`.
    *
    * @see goog.html.SafeStyle#unwrap
    * @override
    */
   goog.html.SafeStyle.prototype.toString = function() {
+    'use strict';
     return 'SafeStyle{' + this.privateDoNotAccessOrElseSafeStyleWrappedValue_ +
         '}';
   };
@@ -248,11 +219,12 @@ if (goog.DEBUG) {
  *
  * @param {!goog.html.SafeStyle} safeStyle The object to extract from.
  * @return {string} The safeStyle object's contained string, unless
- *     the run-time type check fails. In that case, {@code unwrap} returns an
+ *     the run-time type check fails. In that case, `unwrap` returns an
  *     innocuous string, or, if assertions are enabled, throws
- *     {@code goog.asserts.AssertionError}.
+ *     `goog.asserts.AssertionError`.
  */
 goog.html.SafeStyle.unwrap = function(safeStyle) {
+  'use strict';
   // Perform additional Run-time type-checking to ensure that
   // safeStyle is indeed an instance of the expected type.  This
   // provides some additional protection against security bugs due to
@@ -260,20 +232,25 @@ goog.html.SafeStyle.unwrap = function(safeStyle) {
   // Specifically, the following checks are performed:
   // 1. The object is an instance of the expected type.
   // 2. The object is not an instance of a subclass.
-  // 3. The object carries a type marker for the expected type. "Faking" an
-  // object requires a reference to the type marker, which has names intended
-  // to stand out in code reviews.
   if (safeStyle instanceof goog.html.SafeStyle &&
-      safeStyle.constructor === goog.html.SafeStyle &&
-      safeStyle.SAFE_STYLE_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ ===
-          goog.html.SafeStyle.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_) {
+      safeStyle.constructor === goog.html.SafeStyle) {
     return safeStyle.privateDoNotAccessOrElseSafeStyleWrappedValue_;
   } else {
-    goog.asserts.fail('expected object of type SafeStyle, got \'' +
-        safeStyle + '\' of type ' + goog.typeOf(safeStyle));
+    goog.asserts.fail(
+        'expected object of type SafeStyle, got \'' + safeStyle +
+        '\' of type ' + goog.typeOf(safeStyle));
     return 'type_error:SafeStyle';
   }
 };
+
+
+/**
+ * Token used to ensure that object is created only from this file. No code
+ * outside of this file can access this token.
+ * @private {!Object}
+ * @const
+ */
+goog.html.SafeStyle.CONSTRUCTOR_TOKEN_PRIVATE_ = {};
 
 
 /**
@@ -285,22 +262,9 @@ goog.html.SafeStyle.unwrap = function(safeStyle) {
  */
 goog.html.SafeStyle.createSafeStyleSecurityPrivateDoNotAccessOrElse = function(
     style) {
-  return new goog.html.SafeStyle().initSecurityPrivateDoNotAccessOrElse_(style);
-};
-
-
-/**
- * Called from createSafeStyleSecurityPrivateDoNotAccessOrElse(). This
- * method exists only so that the compiler can dead code eliminate static
- * fields (like EMPTY) when they're not accessed.
- * @param {string} style
- * @return {!goog.html.SafeStyle}
- * @private
- */
-goog.html.SafeStyle.prototype.initSecurityPrivateDoNotAccessOrElse_ = function(
-    style) {
-  this.privateDoNotAccessOrElseSafeStyleWrappedValue_ = style;
-  return this;
+  'use strict';
+  return new goog.html.SafeStyle(
+      style, goog.html.SafeStyle.CONSTRUCTOR_TOKEN_PRIVATE_);
 };
 
 
@@ -341,43 +305,47 @@ goog.html.SafeStyle.PropertyMap;
 
 /**
  * Creates a new SafeStyle object from the properties specified in the map.
- * @param {goog.html.SafeStyle.PropertyMap} map Mapping of property names to
+ * @param {!goog.html.SafeStyle.PropertyMap} map Mapping of property names to
  *     their values, for example {'margin': '1px'}. Names must consist of
  *     [-_a-zA-Z0-9]. Values might be strings consisting of
- *     [-,.'"%_!# a-zA-Z0-9], where " and ' must be properly balanced. We also
- *     allow simple functions like rgb() and url() which sanitizes its contents.
- *     Other values must be wrapped in goog.string.Const. URLs might be passed
- *     as goog.html.SafeUrl which will be wrapped into url(""). We also support
- *     array whose elements are joined with ' '. Null value causes skipping the
- *     property.
+ *     [-,.'"%_!# a-zA-Z0-9[\]], where ", ', and [] must be properly balanced.
+ *     We also allow simple functions like rgb() and url() which sanitizes its
+ *     contents. Other values must be wrapped in goog.string.Const. URLs might
+ *     be passed as goog.html.SafeUrl which will be wrapped into url(""). We
+ *     also support array whose elements are joined with ' '. Null value causes
+ *     skipping the property.
  * @return {!goog.html.SafeStyle}
- * @throws {Error} If invalid name is provided.
- * @throws {goog.asserts.AssertionError} If invalid value is provided. With
+ * @throws {!Error} If invalid name is provided.
+ * @throws {!goog.asserts.AssertionError} If invalid value is provided. With
  *     disabled assertions, invalid value is replaced by
  *     goog.html.SafeStyle.INNOCUOUS_STRING.
  */
 goog.html.SafeStyle.create = function(map) {
+  'use strict';
   var style = '';
   for (var name in map) {
-    if (!/^[-_a-zA-Z0-9]+$/.test(name)) {
-      throw Error('Name allows only [-_a-zA-Z0-9], got: ' + name);
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty#Using_hasOwnProperty_as_a_property_name
+    if (Object.prototype.hasOwnProperty.call(map, name)) {
+      if (!/^[-_a-zA-Z0-9]+$/.test(name)) {
+        throw new Error('Name allows only [-_a-zA-Z0-9], got: ' + name);
+      }
+      var value = map[name];
+      if (value == null) {
+        continue;
+      }
+      if (Array.isArray(value)) {
+        value =
+            goog.array.map(value, goog.html.SafeStyle.sanitizePropertyValue_)
+                .join(' ');
+      } else {
+        value = goog.html.SafeStyle.sanitizePropertyValue_(value);
+      }
+      style += name + ':' + value + ';';
     }
-    var value = map[name];
-    if (value == null) {
-      continue;
-    }
-    if (goog.isArray(value)) {
-      value = goog.array.map(value, goog.html.SafeStyle.sanitizePropertyValue_)
-                  .join(' ');
-    } else {
-      value = goog.html.SafeStyle.sanitizePropertyValue_(value);
-    }
-    style += name + ':' + value + ';';
   }
   if (!style) {
     return goog.html.SafeStyle.EMPTY;
   }
-  goog.html.SafeStyle.checkStyle_(style);
   return goog.html.SafeStyle.createSafeStyleSecurityPrivateDoNotAccessOrElse(
       style);
 };
@@ -390,6 +358,7 @@ goog.html.SafeStyle.create = function(map) {
  * @private
  */
 goog.html.SafeStyle.sanitizePropertyValue_ = function(value) {
+  'use strict';
   if (value instanceof goog.html.SafeUrl) {
     var url = goog.html.SafeUrl.unwrap(value);
     return 'url("' + url.replace(/</g, '%3c').replace(/[\\"]/g, '\\$&') + '")';
@@ -399,7 +368,10 @@ goog.html.SafeStyle.sanitizePropertyValue_ = function(value) {
       goog.html.SafeStyle.sanitizePropertyValueString_(String(value));
   // These characters can be used to change context and we don't want that even
   // with const values.
-  goog.asserts.assert(!/[{;}]/.test(result), 'Value does not allow [{;}].');
+  if (/[{;}]/.test(result)) {
+    throw new goog.asserts.AssertionError(
+        'Value does not allow [{;}], got: %s.', [result]);
+  }
   return result;
 };
 
@@ -411,16 +383,28 @@ goog.html.SafeStyle.sanitizePropertyValue_ = function(value) {
  * @private
  */
 goog.html.SafeStyle.sanitizePropertyValueString_ = function(value) {
+  'use strict';
+  // Some CSS property values permit nested functions. We allow one level of
+  // nesting, and all nested functions must also be in the FUNCTIONS_RE_ list.
   var valueWithoutFunctions =
-      value.replace(goog.html.SafeUrl.FUNCTIONS_RE_, '$1')
-          .replace(goog.html.SafeUrl.URL_RE_, 'url');
+      value.replace(goog.html.SafeStyle.FUNCTIONS_RE_, '$1')
+          .replace(goog.html.SafeStyle.FUNCTIONS_RE_, '$1')
+          .replace(goog.html.SafeStyle.URL_RE_, 'url');
   if (!goog.html.SafeStyle.VALUE_RE_.test(valueWithoutFunctions)) {
     goog.asserts.fail(
         'String value allows only ' + goog.html.SafeStyle.VALUE_ALLOWED_CHARS_ +
         ' and simple functions, got: ' + value);
     return goog.html.SafeStyle.INNOCUOUS_STRING;
+  } else if (goog.html.SafeStyle.COMMENT_RE_.test(value)) {
+    goog.asserts.fail('String value disallows comments, got: ' + value);
+    return goog.html.SafeStyle.INNOCUOUS_STRING;
   } else if (!goog.html.SafeStyle.hasBalancedQuotes_(value)) {
     goog.asserts.fail('String value requires balanced quotes, got: ' + value);
+    return goog.html.SafeStyle.INNOCUOUS_STRING;
+  } else if (!goog.html.SafeStyle.hasBalancedSquareBrackets_(value)) {
+    goog.asserts.fail(
+        'String value requires balanced square brackets and one' +
+        ' identifier per pair of brackets, got: ' + value);
     return goog.html.SafeStyle.INNOCUOUS_STRING;
   }
   return goog.html.SafeStyle.sanitizeUrl_(value);
@@ -438,11 +422,12 @@ goog.html.SafeStyle.sanitizePropertyValueString_ = function(value) {
  * @private
  */
 goog.html.SafeStyle.hasBalancedQuotes_ = function(value) {
+  'use strict';
   var outsideSingle = true;
   var outsideDouble = true;
   for (var i = 0; i < value.length; i++) {
     var c = value.charAt(i);
-    if (c == "'" && outsideDouble) {
+    if (c == '\'' && outsideDouble) {
       outsideSingle = !outsideSingle;
     } else if (c == '"' && outsideSingle) {
       outsideDouble = !outsideDouble;
@@ -453,10 +438,42 @@ goog.html.SafeStyle.hasBalancedQuotes_ = function(value) {
 
 
 /**
+ * Checks that square brackets ([ and ]) are properly balanced inside a string,
+ * and that the content in the square brackets is one ident-token;
+ * see https://www.w3.org/TR/css-syntax-3/#ident-token-diagram.
+ * For practicality, and in line with other restrictions posed on SafeStyle
+ * strings, we restrict the character set allowable in the ident-token to
+ * [-_a-zA-Z0-9].
+ * @param {string} value Untrusted CSS property value.
+ * @return {boolean} True if property value is safe with respect to square
+ *     bracket balancedness.
+ * @private
+ */
+goog.html.SafeStyle.hasBalancedSquareBrackets_ = function(value) {
+  'use strict';
+  var outside = true;
+  var tokenRe = /^[-_a-zA-Z0-9]$/;
+  for (var i = 0; i < value.length; i++) {
+    var c = value.charAt(i);
+    if (c == ']') {
+      if (outside) return false;  // Unbalanced ].
+      outside = true;
+    } else if (c == '[') {
+      if (!outside) return false;  // No nesting.
+      outside = false;
+    } else if (!outside && !tokenRe.test(c)) {
+      return false;
+    }
+  }
+  return outside;
+};
+
+
+/**
  * Characters allowed in goog.html.SafeStyle.VALUE_RE_.
  * @private {string}
  */
-goog.html.SafeStyle.VALUE_ALLOWED_CHARS_ = '[-,."\'%_!# a-zA-Z0-9]';
+goog.html.SafeStyle.VALUE_ALLOWED_CHARS_ = '[-,."\'%_!# a-zA-Z0-9\\[\\]]';
 
 
 /**
@@ -464,6 +481,10 @@ goog.html.SafeStyle.VALUE_ALLOWED_CHARS_ = '[-,."\'%_!# a-zA-Z0-9]';
  *
  * Quotes (" and ') are allowed, but a check must be done elsewhere to ensure
  * they're balanced.
+ *
+ * Square brackets ([ and ]) are allowed, but a check must be done elsewhere
+ * to ensure they're balanced. The content inside a pair of square brackets must
+ * be one alphanumeric identifier.
  *
  * ',' allows multiple values to be assigned to the same property
  * (e.g. background-attachment or font-family) and hence could allow
@@ -484,7 +505,7 @@ goog.html.SafeStyle.VALUE_RE_ =
  * backslash.
  * @private @const {!RegExp}
  */
-goog.html.SafeUrl.URL_RE_ = new RegExp(
+goog.html.SafeStyle.URL_RE_ = new RegExp(
     '\\b(url\\([ \t\n]*)(' +
         '\'[ -&(-\\[\\]-~]*\'' +  // Printable characters except ' and \.
         '|"[ !#-\\[\\]-~]*"' +    // Printable characters except " and \.
@@ -492,15 +513,41 @@ goog.html.SafeUrl.URL_RE_ = new RegExp(
         ')([ \t\n]*\\))',
     'g');
 
+/**
+ * Names of functions allowed in FUNCTIONS_RE_.
+ * @private @const {!Array<string>}
+ */
+goog.html.SafeStyle.ALLOWED_FUNCTIONS_ = [
+  'calc',
+  'cubic-bezier',
+  'fit-content',
+  'hsl',
+  'hsla',
+  'linear-gradient',
+  'matrix',
+  'minmax',
+  'repeat',
+  'rgb',
+  'rgba',
+  '(rotate|scale|translate)(X|Y|Z|3d)?',
+];
+
 
 /**
  * Regular expression for simple functions.
  * @private @const {!RegExp}
  */
-goog.html.SafeUrl.FUNCTIONS_RE_ = new RegExp(
-    '\\b(hsl|hsla|rgb|rgba|(rotate|scale|translate)(X|Y|Z|3d)?)' +
-        '\\([-0-9a-z.%, ]+\\)',
+goog.html.SafeStyle.FUNCTIONS_RE_ = new RegExp(
+    '\\b(' + goog.html.SafeStyle.ALLOWED_FUNCTIONS_.join('|') + ')' +
+        '\\([-+*/0-9a-z.%\\[\\], ]+\\)',
     'g');
+
+
+/**
+ * Regular expression for comments. These are disallowed in CSS property values.
+ * @private @const {!RegExp}
+ */
+goog.html.SafeStyle.COMMENT_RE_ = /\/\*/;
 
 
 /**
@@ -518,10 +565,13 @@ goog.html.SafeUrl.FUNCTIONS_RE_ = new RegExp(
  * @private
  */
 goog.html.SafeStyle.sanitizeUrl_ = function(value) {
+  'use strict';
   return value.replace(
-      goog.html.SafeUrl.URL_RE_, function(match, before, url, after) {
+      goog.html.SafeStyle.URL_RE_, function(match, before, url, after) {
+        'use strict';
         var quote = '';
         url = url.replace(/^(['"])(.*)\1$/, function(match, start, inside) {
+          'use strict';
           quote = start;
           return inside;
         });
@@ -538,13 +588,15 @@ goog.html.SafeStyle.sanitizeUrl_ = function(value) {
  * @return {!goog.html.SafeStyle}
  */
 goog.html.SafeStyle.concat = function(var_args) {
+  'use strict';
   var style = '';
 
   /**
    * @param {!goog.html.SafeStyle|!Array<!goog.html.SafeStyle>} argument
    */
   var addArgument = function(argument) {
-    if (goog.isArray(argument)) {
+    'use strict';
+    if (Array.isArray(argument)) {
       goog.array.forEach(argument, addArgument);
     } else {
       style += goog.html.SafeStyle.unwrap(argument);

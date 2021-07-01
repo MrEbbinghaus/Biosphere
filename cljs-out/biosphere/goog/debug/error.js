@@ -1,27 +1,19 @@
-// Copyright 2009 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Provides a base class for custom Error objects such that the
  * stack is correctly maintained.
  *
- * You should never need to throw goog.debug.Error(msg) directly, Error(msg) is
+ * You should never need to throw DebugError(msg) directly, Error(msg) is
  * sufficient.
- *
  */
 
-goog.provide('goog.debug.Error');
+goog.module('goog.debug.Error');
+goog.module.declareLegacyNamespace();
 
 
 
@@ -31,19 +23,20 @@ goog.provide('goog.debug.Error');
  * @constructor
  * @extends {Error}
  */
-goog.debug.Error = function(opt_msg) {
-
+function DebugError(opt_msg) {
   // Attempt to ensure there is a stack trace.
   if (Error.captureStackTrace) {
-    Error.captureStackTrace(this, goog.debug.Error);
+    Error.captureStackTrace(this, DebugError);
   } else {
-    var stack = new Error().stack;
+    const stack = new Error().stack;
     if (stack) {
+      /** @override */
       this.stack = stack;
     }
   }
 
   if (opt_msg) {
+    /** @override */
     this.message = String(opt_msg);
   }
 
@@ -55,9 +48,12 @@ goog.debug.Error = function(opt_msg) {
    * @type {boolean}
    */
   this.reportErrorToServer = true;
-};
-goog.inherits(goog.debug.Error, Error);
+}
+goog.inherits(DebugError, Error);
 
 
 /** @override */
-goog.debug.Error.prototype.name = 'CustomError';
+DebugError.prototype.name = 'CustomError';
+
+
+exports = DebugError;

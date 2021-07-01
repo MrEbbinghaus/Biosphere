@@ -1,18 +1,18 @@
-// Compiled by ClojureScript 1.10.597 {:static-fns true, :optimize-constants true}
+// Compiled by ClojureScript 1.10.866 {:static-fns true, :optimize-constants true, :optimizations :advanced}
 goog.provide('biosphere.draw.tile');
 goog.require('cljs.core');
 goog.require('cljs.core.constants');
-goog.require('biosphere.config');
 goog.require('quil.core');
+goog.require('biosphere.tiles');
 biosphere.draw.tile.interlacing_factor = (200);
 biosphere.draw.tile.make_tile_graphics = (function biosphere$draw$tile$make_tile_graphics(width,height){
 var g = quil.core.create_graphics.cljs$core$IFn$_invoke$arity$2(width,height);
-var gr__13407__auto___13515 = g;
-var _STAR_graphics_STAR__orig_val__13513_13516 = quil.core._STAR_graphics_STAR_;
-var _STAR_graphics_STAR__temp_val__13514_13517 = gr__13407__auto___13515;
-(quil.core._STAR_graphics_STAR_ = _STAR_graphics_STAR__temp_val__13514_13517);
+var gr__14406__auto___14712 = g;
+var _STAR_graphics_STAR__orig_val__14710_14713 = quil.core._STAR_graphics_STAR_;
+var _STAR_graphics_STAR__temp_val__14711_14714 = gr__14406__auto___14712;
+(quil.core._STAR_graphics_STAR_ = _STAR_graphics_STAR__temp_val__14711_14714);
 
-try{quil.core.begin_draw(gr__13407__auto___13515);
+try{quil.core.begin_draw(gr__14406__auto___14712);
 
 quil.core.no_smooth();
 
@@ -24,8 +24,8 @@ quil.core.no_stroke();
 
 quil.core.fill.cljs$core$IFn$_invoke$arity$1((200));
 
-quil.core.end_draw(gr__13407__auto___13515);
-}finally {(quil.core._STAR_graphics_STAR_ = _STAR_graphics_STAR__orig_val__13513_13516);
+quil.core.end_draw(gr__14406__auto___14712);
+}finally {(quil.core._STAR_graphics_STAR_ = _STAR_graphics_STAR__orig_val__14710_14713);
 }
 return g;
 });
@@ -33,96 +33,125 @@ biosphere.draw.tile.water_color = (function biosphere$draw$tile$water_color(amou
 return quil.core.lerp_color(quil.core.color.cljs$core$IFn$_invoke$arity$3((240),(100),(60)),quil.core.color.cljs$core$IFn$_invoke$arity$3((210),(50),(100)),amount);
 });
 biosphere.draw.tile.land_color = (function biosphere$draw$tile$land_color(amount){
-return quil.core.lerp_color(quil.core.color.cljs$core$IFn$_invoke$arity$3((125),(60),(60)),quil.core.color.cljs$core$IFn$_invoke$arity$3((0),(100),(100)),amount);
+return quil.core.lerp_color(quil.core.color.cljs$core$IFn$_invoke$arity$3((41),(62),(55)),quil.core.color.cljs$core$IFn$_invoke$arity$3((125),(60),(60)),amount);
 });
-biosphere.draw.tile.tile_color = (function biosphere$draw$tile$tile_color(p__13518){
-var map__13519 = p__13518;
-var map__13519__$1 = (((((!((map__13519 == null))))?(((((map__13519.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__13519.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.cljs$core$IFn$_invoke$arity$2(cljs.core.hash_map,map__13519):map__13519);
-var value = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__13519__$1,cljs.core.cst$kw$tile_SLASH_value);
-var water_QMARK_ = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__13519__$1,cljs.core.cst$kw$tile_SLASH_water_QMARK_);
-if(cljs.core.truth_(water_QMARK_)){
-return biosphere.draw.tile.water_color((value * ((1) / biosphere.config.water_level)));
+biosphere.draw.tile.tile_color = (function biosphere$draw$tile$tile_color(p__14715,p__14716){
+var map__14717 = p__14715;
+var map__14717__$1 = cljs.core.__destructure_map(map__14717);
+var state = map__14717__$1;
+var water_level = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__14717__$1,cljs.core.cst$kw$water_DASH_level);
+var map__14718 = p__14716;
+var map__14718__$1 = cljs.core.__destructure_map(map__14718);
+var tile = map__14718__$1;
+var height = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__14718__$1,cljs.core.cst$kw$height);
+var max_energy = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__14718__$1,cljs.core.cst$kw$max_DASH_energy);
+var energy = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__14718__$1,cljs.core.cst$kw$energy);
+if(biosphere.tiles.water_QMARK_(state,tile)){
+return biosphere.draw.tile.water_color(((1) - ((-1) * height)));
 } else {
-return biosphere.draw.tile.land_color((value - biosphere.config.water_level));
+return biosphere.draw.tile.land_color((energy / max_energy));
 }
 });
-biosphere.draw.tile.draw_BANG_ = (function biosphere$draw$tile$draw_BANG_(state,p__13521){
-var map__13522 = p__13521;
-var map__13522__$1 = (((((!((map__13522 == null))))?(((((map__13522.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__13522.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.cljs$core$IFn$_invoke$arity$2(cljs.core.hash_map,map__13522):map__13522);
-var tile = map__13522__$1;
-var x = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__13522__$1,cljs.core.cst$kw$tile_SLASH_x);
-var y = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__13522__$1,cljs.core.cst$kw$tile_SLASH_y);
-var vec__13524 = cljs.core.cst$kw$resolution.cljs$core$IFn$_invoke$arity$1(state);
-var res_x = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__13524,(0),null);
-var res_y = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__13524,(1),null);
-quil.core.fill.cljs$core$IFn$_invoke$arity$1(biosphere.draw.tile.tile_color(tile));
+biosphere.draw.tile.draw_BANG_ = (function biosphere$draw$tile$draw_BANG_(p__14719,p__14720){
+var map__14721 = p__14719;
+var map__14721__$1 = cljs.core.__destructure_map(map__14721);
+var state = map__14721__$1;
+var width = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__14721__$1,cljs.core.cst$kw$width);
+var height = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__14721__$1,cljs.core.cst$kw$height);
+var resolution = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__14721__$1,cljs.core.cst$kw$resolution);
+var map__14722 = p__14720;
+var map__14722__$1 = cljs.core.__destructure_map(map__14722);
+var tile = map__14722__$1;
+var location = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__14722__$1,cljs.core.cst$kw$location);
+var vec__14723 = location;
+var x = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__14723,(0),null);
+var y = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__14723,(1),null);
+var vec__14726 = resolution;
+var res_x = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__14726,(0),null);
+var res_y = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__14726,(1),null);
+var px = (x * (res_x / width));
+var py = (y * (res_y / height));
+var pwidth = (res_x / width);
+var pheight = (res_y / height);
+if((((x === (0))) && (cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2((1),y)))){
+quil.core.print_every_n_millisec.cljs$core$IFn$_invoke$arity$variadic((1000),cljs.core.prim_seq.cljs$core$IFn$_invoke$arity$2([["px py",cljs.core.str.cljs$core$IFn$_invoke$arity$1(new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [px,py], null))].join('')], 0));
+} else {
+}
 
-return quil.core.rect.cljs$core$IFn$_invoke$arity$4((x * (res_x / biosphere.config.width)),(y * (res_y / biosphere.config.height)),(res_x / biosphere.config.width),(res_y / biosphere.config.height));
+quil.core.fill.cljs$core$IFn$_invoke$arity$1(biosphere.draw.tile.tile_color(state,tile));
+
+return quil.core.rect.cljs$core$IFn$_invoke$arity$4(px,py,pwidth,pheight);
 });
 biosphere.draw.tile.interlaced = (function biosphere$draw$tile$interlaced(factor,coll){
 var cyc = cljs.core.mod(quil.core.frame_count(),factor);
 return cljs.core.take_nth.cljs$core$IFn$_invoke$arity$2(factor,cljs.core.drop.cljs$core$IFn$_invoke$arity$2(cyc,coll));
 });
-biosphere.draw.tile.draw_tiles_BANG_ = (function biosphere$draw$tile$draw_tiles_BANG_(p__13527){
-var map__13528 = p__13527;
-var map__13528__$1 = (((((!((map__13528 == null))))?(((((map__13528.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__13528.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.cljs$core$IFn$_invoke$arity$2(cljs.core.hash_map,map__13528):map__13528);
-var state = map__13528__$1;
-var tile_graphic = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__13528__$1,cljs.core.cst$kw$tile_DASH_graphic);
-var tiles = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__13528__$1,cljs.core.cst$kw$tiles);
-var gr__13407__auto___13536 = tile_graphic;
-var _STAR_graphics_STAR__orig_val__13530_13537 = quil.core._STAR_graphics_STAR_;
-var _STAR_graphics_STAR__temp_val__13531_13538 = gr__13407__auto___13536;
-(quil.core._STAR_graphics_STAR_ = _STAR_graphics_STAR__temp_val__13531_13538);
+biosphere.draw.tile.draw_tiles_BANG_ = (function biosphere$draw$tile$draw_tiles_BANG_(p__14729){
+var map__14730 = p__14729;
+var map__14730__$1 = cljs.core.__destructure_map(map__14730);
+var state = map__14730__$1;
+var tile_graphic = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__14730__$1,cljs.core.cst$kw$tile_DASH_graphic);
+var tiles = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__14730__$1,cljs.core.cst$kw$tiles);
+var dirty_tiles = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__14730__$1,cljs.core.cst$kw$dirty_DASH_tiles);
+if(cljs.core.truth_(cljs.core.empty(dirty_tiles))){
+} else {
+quil.core.print_first_n.cljs$core$IFn$_invoke$arity$variadic((1),cljs.core.prim_seq.cljs$core$IFn$_invoke$arity$2([cljs.core.take.cljs$core$IFn$_invoke$arity$2((5),dirty_tiles)], 0));
+}
 
-try{quil.core.begin_draw(gr__13407__auto___13536);
+var gr__14406__auto___14737 = tile_graphic;
+var _STAR_graphics_STAR__orig_val__14731_14738 = quil.core._STAR_graphics_STAR_;
+var _STAR_graphics_STAR__temp_val__14732_14739 = gr__14406__auto___14737;
+(quil.core._STAR_graphics_STAR_ = _STAR_graphics_STAR__temp_val__14732_14739);
 
-var seq__13532_13539 = cljs.core.seq((((quil.core.frame_count() <= (1)))?tiles:biosphere.draw.tile.interlaced(biosphere.draw.tile.interlacing_factor,tiles)));
-var chunk__13533_13540 = null;
-var count__13534_13541 = (0);
-var i__13535_13542 = (0);
+try{quil.core.begin_draw(gr__14406__auto___14737);
+
+var seq__14733_14740 = cljs.core.seq(dirty_tiles);
+var chunk__14734_14741 = null;
+var count__14735_14742 = (0);
+var i__14736_14743 = (0);
 while(true){
-if((i__13535_13542 < count__13534_13541)){
-var tile_13543 = chunk__13533_13540.cljs$core$IIndexed$_nth$arity$2(null,i__13535_13542);
-biosphere.draw.tile.draw_BANG_(state,tile_13543);
+if((i__14736_14743 < count__14735_14742)){
+var tile_14744 = chunk__14734_14741.cljs$core$IIndexed$_nth$arity$2(null,i__14736_14743);
+biosphere.draw.tile.draw_BANG_(state,(tiles.cljs$core$IFn$_invoke$arity$1 ? tiles.cljs$core$IFn$_invoke$arity$1(tile_14744) : tiles.call(null,tile_14744)));
 
 
-var G__13544 = seq__13532_13539;
-var G__13545 = chunk__13533_13540;
-var G__13546 = count__13534_13541;
-var G__13547 = (i__13535_13542 + (1));
-seq__13532_13539 = G__13544;
-chunk__13533_13540 = G__13545;
-count__13534_13541 = G__13546;
-i__13535_13542 = G__13547;
+var G__14745 = seq__14733_14740;
+var G__14746 = chunk__14734_14741;
+var G__14747 = count__14735_14742;
+var G__14748 = (i__14736_14743 + (1));
+seq__14733_14740 = G__14745;
+chunk__14734_14741 = G__14746;
+count__14735_14742 = G__14747;
+i__14736_14743 = G__14748;
 continue;
 } else {
-var temp__5735__auto___13548 = cljs.core.seq(seq__13532_13539);
-if(temp__5735__auto___13548){
-var seq__13532_13549__$1 = temp__5735__auto___13548;
-if(cljs.core.chunked_seq_QMARK_(seq__13532_13549__$1)){
-var c__4609__auto___13550 = cljs.core.chunk_first(seq__13532_13549__$1);
-var G__13551 = cljs.core.chunk_rest(seq__13532_13549__$1);
-var G__13552 = c__4609__auto___13550;
-var G__13553 = cljs.core.count(c__4609__auto___13550);
-var G__13554 = (0);
-seq__13532_13539 = G__13551;
-chunk__13533_13540 = G__13552;
-count__13534_13541 = G__13553;
-i__13535_13542 = G__13554;
+var temp__5753__auto___14749 = cljs.core.seq(seq__14733_14740);
+if(temp__5753__auto___14749){
+var seq__14733_14750__$1 = temp__5753__auto___14749;
+if(cljs.core.chunked_seq_QMARK_(seq__14733_14750__$1)){
+var c__4649__auto___14751 = cljs.core.chunk_first(seq__14733_14750__$1);
+var G__14752 = cljs.core.chunk_rest(seq__14733_14750__$1);
+var G__14753 = c__4649__auto___14751;
+var G__14754 = cljs.core.count(c__4649__auto___14751);
+var G__14755 = (0);
+seq__14733_14740 = G__14752;
+chunk__14734_14741 = G__14753;
+count__14735_14742 = G__14754;
+i__14736_14743 = G__14755;
 continue;
 } else {
-var tile_13555 = cljs.core.first(seq__13532_13549__$1);
-biosphere.draw.tile.draw_BANG_(state,tile_13555);
+var tile_14756 = cljs.core.first(seq__14733_14750__$1);
+biosphere.draw.tile.draw_BANG_(state,(tiles.cljs$core$IFn$_invoke$arity$1 ? tiles.cljs$core$IFn$_invoke$arity$1(tile_14756) : tiles.call(null,tile_14756)));
 
 
-var G__13556 = cljs.core.next(seq__13532_13549__$1);
-var G__13557 = null;
-var G__13558 = (0);
-var G__13559 = (0);
-seq__13532_13539 = G__13556;
-chunk__13533_13540 = G__13557;
-count__13534_13541 = G__13558;
-i__13535_13542 = G__13559;
+var G__14757 = cljs.core.next(seq__14733_14750__$1);
+var G__14758 = null;
+var G__14759 = (0);
+var G__14760 = (0);
+seq__14733_14740 = G__14757;
+chunk__14734_14741 = G__14758;
+count__14735_14742 = G__14759;
+i__14736_14743 = G__14760;
 continue;
 }
 } else {
@@ -131,8 +160,8 @@ continue;
 break;
 }
 
-quil.core.end_draw(gr__13407__auto___13536);
-}finally {(quil.core._STAR_graphics_STAR_ = _STAR_graphics_STAR__orig_val__13530_13537);
+quil.core.end_draw(gr__14406__auto___14737);
+}finally {(quil.core._STAR_graphics_STAR_ = _STAR_graphics_STAR__orig_val__14731_14738);
 }
 return quil.core.image.cljs$core$IFn$_invoke$arity$3(tile_graphic,(0),(0));
 });

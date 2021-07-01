@@ -1,4 +1,4 @@
-// Compiled by ClojureScript 1.10.597 {:static-fns true, :optimize-constants true}
+// Compiled by ClojureScript 1.10.866 {:static-fns true, :optimize-constants true, :optimizations :advanced}
 goog.provide('quil.middlewares.navigation_2d');
 goog.require('cljs.core');
 goog.require('cljs.core.constants');
@@ -27,8 +27,8 @@ return new cljs.core.PersistentArrayMap(null, 2, [cljs.core.cst$kw$position,new 
  */
 quil.middlewares.navigation_2d.setup_2d_nav = (function quil$middlewares$navigation_2d$setup_2d_nav(user_setup,user_settings){
 var initial_state = cljs.core.merge.cljs$core$IFn$_invoke$arity$variadic(cljs.core.prim_seq.cljs$core$IFn$_invoke$arity$2([quil.middlewares.navigation_2d.default_position(),cljs.core.select_keys(user_settings,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$position,cljs.core.cst$kw$zoom], null))], 0));
-return cljs.core.update_in.cljs$core$IFn$_invoke$arity$3((user_setup.cljs$core$IFn$_invoke$arity$0 ? user_setup.cljs$core$IFn$_invoke$arity$0() : user_setup.call(null)),new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$navigation_DASH_2d], null),(function (p1__13489_SHARP_){
-return cljs.core.merge.cljs$core$IFn$_invoke$arity$variadic(cljs.core.prim_seq.cljs$core$IFn$_invoke$arity$2([initial_state,p1__13489_SHARP_], 0));
+return cljs.core.update_in.cljs$core$IFn$_invoke$arity$3((user_setup.cljs$core$IFn$_invoke$arity$0 ? user_setup.cljs$core$IFn$_invoke$arity$0() : user_setup.call(null)),new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$navigation_DASH_2d], null),(function (p1__14673_SHARP_){
+return cljs.core.merge.cljs$core$IFn$_invoke$arity$variadic(cljs.core.prim_seq.cljs$core$IFn$_invoke$arity$2([initial_state,p1__14673_SHARP_], 0));
 }));
 });
 /**
@@ -60,15 +60,15 @@ quil.middlewares.navigation_2d.assert_state_has_navigation(state);
 
 quil.core.push_matrix();
 
-var nav_2d_13490 = cljs.core.cst$kw$navigation_DASH_2d.cljs$core$IFn$_invoke$arity$1(state);
-var zoom_13491 = cljs.core.cst$kw$zoom.cljs$core$IFn$_invoke$arity$1(nav_2d_13490);
-var pos_13492 = cljs.core.cst$kw$position.cljs$core$IFn$_invoke$arity$1(nav_2d_13490);
-quil.core.scale.cljs$core$IFn$_invoke$arity$1(zoom_13491);
+var nav_2d_14674 = cljs.core.cst$kw$navigation_DASH_2d.cljs$core$IFn$_invoke$arity$1(state);
+var zoom_14675 = cljs.core.cst$kw$zoom.cljs$core$IFn$_invoke$arity$1(nav_2d_14674);
+var pos_14676 = cljs.core.cst$kw$position.cljs$core$IFn$_invoke$arity$1(nav_2d_14674);
+quil.core.scale.cljs$core$IFn$_invoke$arity$1(zoom_14675);
 
-var tr__13393__auto___13493 = new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [(((quil.core.width() / (2)) / zoom_13491) - cljs.core.first(pos_13492)),(((quil.core.height() / (2)) / zoom_13491) - cljs.core.second(pos_13492))], null);
+var tr__14392__auto___14677 = new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [(((quil.core.width() / (2)) / zoom_14675) - cljs.core.first(pos_14676)),(((quil.core.height() / (2)) / zoom_14675) - cljs.core.second(pos_14676))], null);
 quil.core.push_matrix();
 
-try{quil.core.translate.cljs$core$IFn$_invoke$arity$1(tr__13393__auto___13493);
+try{quil.core.translate.cljs$core$IFn$_invoke$arity$1(tr__14392__auto___14677);
 
 (user_draw.cljs$core$IFn$_invoke$arity$1 ? user_draw.cljs$core$IFn$_invoke$arity$1(state) : user_draw.call(null,state));
 }finally {quil.core.pop_matrix();
@@ -94,12 +94,12 @@ var setup = cljs.core.cst$kw$setup.cljs$core$IFn$_invoke$arity$2(options,(functi
 return cljs.core.PersistentArrayMap.EMPTY;
 }));
 return cljs.core.assoc.cljs$core$IFn$_invoke$arity$variadic(options,cljs.core.cst$kw$setup,cljs.core.partial.cljs$core$IFn$_invoke$arity$3(quil.middlewares.navigation_2d.setup_2d_nav,setup,user_settings),cljs.core.prim_seq.cljs$core$IFn$_invoke$arity$2([cljs.core.cst$kw$draw,cljs.core.partial.cljs$core$IFn$_invoke$arity$2(quil.middlewares.navigation_2d.draw,user_draw),cljs.core.cst$kw$mouse_DASH_dragged,(function (state,event){
-var G__13494 = quil.middlewares.navigation_2d.mouse_dragged(state,event);
-var G__13495 = event;
-return (user_mouse_dragged.cljs$core$IFn$_invoke$arity$2 ? user_mouse_dragged.cljs$core$IFn$_invoke$arity$2(G__13494,G__13495) : user_mouse_dragged.call(null,G__13494,G__13495));
+var G__14678 = quil.middlewares.navigation_2d.mouse_dragged(state,event);
+var G__14679 = event;
+return (user_mouse_dragged.cljs$core$IFn$_invoke$arity$2 ? user_mouse_dragged.cljs$core$IFn$_invoke$arity$2(G__14678,G__14679) : user_mouse_dragged.call(null,G__14678,G__14679));
 }),cljs.core.cst$kw$mouse_DASH_wheel,(function (state,event){
-var G__13496 = quil.middlewares.navigation_2d.mouse_wheel(state,event);
-var G__13497 = event;
-return (user_mouse_wheel.cljs$core$IFn$_invoke$arity$2 ? user_mouse_wheel.cljs$core$IFn$_invoke$arity$2(G__13496,G__13497) : user_mouse_wheel.call(null,G__13496,G__13497));
+var G__14680 = quil.middlewares.navigation_2d.mouse_wheel(state,event);
+var G__14681 = event;
+return (user_mouse_wheel.cljs$core$IFn$_invoke$arity$2 ? user_mouse_wheel.cljs$core$IFn$_invoke$arity$2(G__14680,G__14681) : user_mouse_wheel.call(null,G__14680,G__14681));
 })], 0));
 });

@@ -1,28 +1,18 @@
-// Copyright 2013 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Utilities used by goog.labs.userAgent tools. These functions
  * should not be used outside of goog.labs.userAgent.*.
  *
- *
- * @author nnaze@google.com (Nathan Naze)
  */
 
 goog.provide('goog.labs.userAgent.util');
 
-goog.require('goog.string');
+goog.require('goog.string.internal');
 
 
 /**
@@ -33,6 +23,7 @@ goog.require('goog.string');
  * @private
  */
 goog.labs.userAgent.util.getNativeUserAgentString_ = function() {
+  'use strict';
   var navigator = goog.labs.userAgent.util.getNavigator_();
   if (navigator) {
     var userAgent = navigator.userAgent;
@@ -47,10 +38,11 @@ goog.labs.userAgent.util.getNativeUserAgentString_ = function() {
 /**
  * Getter for the native navigator.
  * This is a separate function so it can be stubbed out in testing.
- * @return {Navigator}
+ * @return {!Navigator}
  * @private
  */
 goog.labs.userAgent.util.getNavigator_ = function() {
+  'use strict';
   return goog.global.navigator;
 };
 
@@ -71,6 +63,7 @@ goog.labs.userAgent.util.userAgent_ =
  * @param {?string=} opt_userAgent The User-Agent override.
  */
 goog.labs.userAgent.util.setUserAgent = function(opt_userAgent) {
+  'use strict';
   goog.labs.userAgent.util.userAgent_ =
       opt_userAgent || goog.labs.userAgent.util.getNativeUserAgentString_();
 };
@@ -80,6 +73,7 @@ goog.labs.userAgent.util.setUserAgent = function(opt_userAgent) {
  * @return {string} The user agent string.
  */
 goog.labs.userAgent.util.getUserAgent = function() {
+  'use strict';
   return goog.labs.userAgent.util.userAgent_;
 };
 
@@ -89,8 +83,9 @@ goog.labs.userAgent.util.getUserAgent = function() {
  * @return {boolean} Whether the user agent contains the given string.
  */
 goog.labs.userAgent.util.matchUserAgent = function(str) {
+  'use strict';
   var userAgent = goog.labs.userAgent.util.getUserAgent();
-  return goog.string.contains(userAgent, str);
+  return goog.string.internal.contains(userAgent, str);
 };
 
 
@@ -100,8 +95,9 @@ goog.labs.userAgent.util.matchUserAgent = function(str) {
  *     case.
  */
 goog.labs.userAgent.util.matchUserAgentIgnoreCase = function(str) {
+  'use strict';
   var userAgent = goog.labs.userAgent.util.getUserAgent();
-  return goog.string.caseInsensitiveContains(userAgent, str);
+  return goog.string.internal.caseInsensitiveContains(userAgent, str);
 };
 
 
@@ -112,6 +108,7 @@ goog.labs.userAgent.util.matchUserAgentIgnoreCase = function(str) {
  *     of the parenthetical.
  */
 goog.labs.userAgent.util.extractVersionTuples = function(userAgent) {
+  'use strict';
   // Matches each section of a user agent string.
   // Example UA:
   // Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us)
