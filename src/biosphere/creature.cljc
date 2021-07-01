@@ -33,7 +33,7 @@
   "Check if creature is on water."
   [state {:keys [x y]}]
   (let [index (tiles/pos->id [x y])]
-    (get-in state [:tiles index :tile/water?])))
+    (tiles/water? state (get-in state [:tiles index]))))
 
 
 (defn move

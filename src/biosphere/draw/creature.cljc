@@ -1,6 +1,5 @@
 (ns biosphere.draw.creature
   (:require [quil.core :as q]
-            [biosphere.config :as config]
             [biosphere.utils :as util :include-macros true]
             #?(:clj [biosphere.creature]
                :cljs [biosphere.creature :refer [Creature]]))
@@ -18,10 +17,10 @@
 
 (extend-protocol Drawable
   Creature
-  (draw [{:keys [x y direction]} {:keys [resolution]}]
+  (draw [{:keys [x y direction]} {:keys [resolution width height]}]
     (let
-      [x (-> x (/ config/width) (* (first resolution)))
-       y (-> y (/ config/height) (* (second resolution)))]
+      [x (-> x (/ width) (* (first resolution)))
+       y (-> y (/ height) (* (second resolution)))]
       (util/with-transform
         {:translate [x y]
          :rotate (q/radians direction)

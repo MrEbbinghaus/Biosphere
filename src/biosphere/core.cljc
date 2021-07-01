@@ -11,10 +11,6 @@
             [clojure.string :as str])
   #?(:cljs (:import [goog Uri])))
 
-(defn gen-tiles []
-  (vec (for [y (range config/height)
-             x (range config/width)]
-         (tiles/gen-tile x y q/noise))))
 
 #?(:cljs
    (defn get-query []
@@ -28,31 +24,39 @@
 (defn setup []
   (let [seed (or #?(:cljs (:seed (get-query)))
                (gen-map-seed))]
-    ; Set frame rate to 30 frames per second.
-    (q/frame-rate 30)
+    (q/frame-rate 600)
     ; Set color mode to HSB (HSV) instead of default RGB.
     (q/color-mode :hsb)
     (q/noise-seed seed)
     ; setup function returns initial state. It contains
     ; circle color and position.
-    {:resolution [(q/width) (q/height)]
-     :navigation-2d {:zoom 1}
-     :seed seed
+    (binding
+      [tiles/*height-noise* q/noise]
+      (->
+        {:resolution [(q/width) (q/height)]
+         :navigation-2d {:zoom 1}
+         :seed seed
 
-     :tiles        (gen-tiles)
-     :tile-graphic (draw-tiles/make-tile-graphics (q/width) (q/height))
-     :creature-graphic (draw-creature/make-graphic (q/width) (q/height))
-     :creatures    (into {}
-                     (for [id (range config/no-of-creatures)]
-                       [id (creature/new-rand id)]))}))
+         :water-level 0.4
+         :no-of-creatures 100
+         :speed 0.5
+         :width (/ 256 1) ; width in tiles
+         :height (/ 144 1) ; height in tiles
+
+         :tile-graphic (draw-tiles/make-tile-graphics (q/width) (q/height))
+         :creature-graphic (draw-creature/make-graphic (q/width) (q/height))
+         :creatures    (into {}
+                         (for [id (range 100)]
+                           [id (creature/new-rand id)]))}
+        tiles/init-tiles))))
 
 
 (defn keep-zoom-in-bounds [state]
   (update-in state [:navigation-2d :zoom] q/constrain 1 2))
 
-(defn update-resolution [{:keys [resolution] :as state}]
-  (let [current-res [(util/floor-to (q/width) config/width)
-                     (util/floor-to (q/height) config/height)]]
+(defn update-resolution [{:keys [resolution width height] :as state}]
+  (let [current-res [(util/floor-to (q/width) width)
+                     (util/floor-to (q/height) height)]]
     (if (= current-res resolution)
       state
       (-> state
@@ -64,6 +68,7 @@
   (-> state
     update-resolution
     keep-zoom-in-bounds
+    (update :tick inc)
     tiles/update-tiles
     creature/update-creatures))
 

@@ -1,6 +1,7 @@
 (ns biosphere.draw.tile
-  (:require [biosphere.config :as config]
-            [quil.core :as q]))
+  (:require
+    [quil.core :as q]
+    [biosphere.tiles :as tiles]))
 
 (def interlacing-factor 200)
 
@@ -20,30 +21,37 @@
 (defn land-color [amount]
   (q/lerp-color (q/color 125 60 60) (q/color 0 100 100) amount))
 
-(defn tile-color [{:tile/keys [value water?]}]
-  (if water?
-    (water-color (* value (/ 1 config/water-level)))
-    (land-color (- value config/water-level))))
+(defn tile-color [{:keys [water-level] :as state} {:keys [height] :as tile}]
+  (if (tiles/water? state tile)
+    (water-color (* height (/ 1 water-level)))
+    (land-color (- height water-level))))
 
-(defn draw! [state {:tile/keys [x y] :as tile}]
-  (let [[res-x res-y] (:resolution state)]
-    (q/fill (tile-color tile))
-    (q/rect
-      (* x (/ res-x config/width))
-      (* y (/ res-y config/height))
-      (/ res-x config/width) (/ res-y config/height))))
+(defn draw! [state {:keys [x y height] :as tile}]
+  (let [[res-x res-y] (:resolution state)
+        {:keys [width height]} state
+        px (* x (/ res-x width))
+        py (* y (/ res-y height))
+        pwidth (/ res-x width)
+        pheight (/ res-y height)]
+    (when (and (zero? x) (= 1 y))
+      (q/print-every-n-millisec 1000 [px py]))
+    (q/fill (tile-color state tile))
+    (q/rect px py pwidth pheight)
+    #_(q/with-fill 255
+        (q/text (str [x y height])
+          px
+          py
+          (+ px pwidth)
+          (+ py pheight)))))
 
 (defn interlaced [factor coll]
   (let [cyc (mod (q/frame-count) factor)]
     (->> coll (drop cyc) (take-nth factor))))
 
-(defn draw-tiles! [{:keys [tile-graphic tiles] :as state}]
+(defn draw-tiles! [{:keys [tile-graphic tiles dirty-tiles] :as state}]
   (q/with-graphics tile-graphic
-    (doseq [tile
-            (if (<= (q/frame-count) 1)
-              tiles
-              (interlaced interlacing-factor tiles))]
-      (draw! state tile)))
+    (doseq [tile dirty-tiles]
+      (draw! state (tiles tile))))
   (q/image tile-graphic 0 0))
 
 
