@@ -24,7 +24,7 @@
 (defn setup []
   (let [seed (or #?(:cljs (:seed (get-query)))
                (gen-map-seed))]
-    (q/frame-rate 600)
+    (q/frame-rate 60)
     ; Set color mode to HSB (HSV) instead of default RGB.
     (q/color-mode :hsb)
     (q/noise-seed seed)
@@ -39,16 +39,14 @@
 
          :water-level 0.4
          :no-of-creatures 100
-         :speed 0.5
+         :speed 0.25
          :width (/ 256 1) ; width in tiles
          :height (/ 144 1) ; height in tiles
 
          :tile-graphic (draw-tiles/make-tile-graphics (q/width) (q/height))
-         :creature-graphic (draw-creature/make-graphic (q/width) (q/height))
-         :creatures    (into {}
-                         (for [id (range 100)]
-                           [id (creature/new-rand id)]))}
-        tiles/init-tiles))))
+         :creature-graphic (draw-creature/make-graphic (q/width) (q/height))}
+        tiles/init-tiles
+        creature/init-creatures))))
 
 
 (defn keep-zoom-in-bounds [state]

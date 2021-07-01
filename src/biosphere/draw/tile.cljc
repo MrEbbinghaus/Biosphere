@@ -19,22 +19,22 @@
   (q/lerp-color (q/color 240 100 60) (q/color 210 50 100) amount))
 
 (defn land-color [amount]
-  (q/lerp-color (q/color 125 60 60) (q/color 0 100 100) amount))
+  (q/lerp-color (q/color 41 62 55) (q/color 125 60 60)  amount))
 
-(defn tile-color [{:keys [water-level] :as state} {:keys [height] :as tile}]
+(defn tile-color [{:keys [water-level] :as state} {:keys [height max-energy energy] :as tile}]
   (if (tiles/water? state tile)
-    (water-color (* height (/ 1 water-level)))
-    (land-color (- height water-level))))
+    (water-color (- 1 (* -1 height)))
+    (land-color (/ energy max-energy))))
 
-(defn draw! [state {:keys [x y height] :as tile}]
-  (let [[res-x res-y] (:resolution state)
-        {:keys [width height]} state
+(defn draw! [{:keys [width height resolution] :as state} {:keys [location] :as tile}]
+  (let [[x y] location
+        [res-x res-y] resolution
         px (* x (/ res-x width))
         py (* y (/ res-y height))
         pwidth (/ res-x width)
         pheight (/ res-y height)]
     (when (and (zero? x) (= 1 y))
-      (q/print-every-n-millisec 1000 [px py]))
+      (q/print-every-n-millisec 1000 (str "px py" [px py])))
     (q/fill (tile-color state tile))
     (q/rect px py pwidth pheight)
     #_(q/with-fill 255
@@ -49,6 +49,7 @@
     (->> coll (drop cyc) (take-nth factor))))
 
 (defn draw-tiles! [{:keys [tile-graphic tiles dirty-tiles] :as state}]
+  (when-not (empty dirty-tiles) (q/print-first-n 1 (take 5 dirty-tiles)))
   (q/with-graphics tile-graphic
     (doseq [tile dirty-tiles]
       (draw! state (tiles tile))))
