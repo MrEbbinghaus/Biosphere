@@ -19,11 +19,13 @@
   [min max]
   (+ min (rand-int (- max min))))
 
-
 (defn chance
   "Rolls a against a dice (default: d=100) and returns true if the throw is above `percentage`."
   ([percentage] (chance 100 percentage))
   ([d percentage] (> (rand-int d) percentage)))
+
+(defn normalize [x low high]
+  (/ (- x low) (- high low)))
 
 #?(:clj
     (defmacro with-transform [{:keys [translate rotate scale]} & body]
@@ -42,3 +44,10 @@
   []
   #?(:clj false
      :cljs (and (-> js/window .-matchMedia) (-> js/window (.matchMedia "(prefers-color-scheme: dark)") .-matches))))
+
+(defn *d [state x]
+  (* (:delta-time state) x))
+
+(defn ^Number radians [^Number degree]
+  #?(:clj (Math/toRadians degree)
+     :cljs (/ (* degree Math/PI) 180)))

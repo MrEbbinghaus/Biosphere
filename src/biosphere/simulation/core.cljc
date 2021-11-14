@@ -1,21 +1,25 @@
 (ns biosphere.simulation.core
   (:require
     [biosphere.tiles :as tiles]
-    [biosphere.creature :as creature]))
+    [biosphere.creature :as creature]
+    [biosphere.simulation.noise :as noise]))
 
 (def defaults
-  {:water-level 0.4
+  {:sea-level 0.48 ; 0 => no water, 1 => everything water
    :no-of-creatures 100
    :speed 0.25 ; units per second
    :width 256 ; width in tiles
    :height 144}) ; height in tiles
 
 (defn new-simulation [{:keys [seed] :as params}]
-  (-> defaults
-    (merge params)
-    (assoc :seed (or seed (rand-int 1000)))
-    tiles/init-tiles
-    creature/init-creatures))
+  (let [seed (or seed (rand-int 1000))]
+    (-> defaults
+      (merge params)
+      (assoc
+        :seed seed
+        :noise (noise/simplex-generator seed 100)) ; larger scale = zoom in
+      tiles/init-tiles
+      creature/init-creatures)))
 
 (defn now []
   #?(:cljs (js/window.performance.now)
@@ -35,3 +39,20 @@
     update-delta
     tiles/update-tiles
     creature/update-creatures))
+
+(defn start [simulation]
+  (assoc simulation :running? true))
+
+(defn start! [simulation]
+  (when-let [start-runner (:runner @simulation)]
+    (swap! simulation start)
+    (start-runner)))
+
+(defn stop [simulation]
+  (assoc simulation :running? false))
+
+(defn stop! [simulation]
+  (swap! simulation stop))
+
+(defn restart [simulation]
+  (new-simulation (assoc simulation :tick 0)))

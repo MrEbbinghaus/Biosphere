@@ -1,7 +1,7 @@
 (ns biosphere.creature
-  (:require [quil.core :as q]
-            [biosphere.utils :as utils]
-            [biosphere.tiles :as tiles]))
+  (:require
+    [biosphere.utils :as utils :refer [*d]]
+    [biosphere.tiles :as tiles]))
 
 (def max-energy-intake 1)
 (defrecord Creature
@@ -23,7 +23,7 @@
   (update creature :direction #(-> % (+ amount) (mod 360))))
 
 (defn calculate-v2movement [{:keys [speed direction]}]
-  (utils/polar->cart speed (q/radians direction)))
+  (utils/polar->cart speed (utils/radians direction)))
 
 (defn update-v2movement [creature]
   (assoc creature :v2movement (calculate-v2movement creature)))
@@ -36,7 +36,7 @@
 
 
 (defn one-step-ahead [{:keys [speed direction location]}]
-  (mapv + (utils/polar->cart speed (q/radians direction)) location))
+  (mapv + (utils/polar->cart speed (utils/radians direction)) location))
 
 (defn move
   "Update the position of a creature based on their speed, direct and current position."
@@ -72,7 +72,7 @@
 
 (defn- tick-on-water [creature state]
   (if (on-water? state creature)
-    (-> creature (expend 5) (turn 180))
+    (-> creature (expend (*d state 5)) (turn 180))
     creature))
 
 (defn whats-ahead [state creature]
@@ -103,7 +103,9 @@
         (eat new-creature 0.2)))))
 
 (defn update-creatures [state]
-  (reduce (fn [new-state ^Creature creature] (tick creature state new-state)) state (-> state :creatures vals)))
+  (reduce (fn [new-state ^Creature creature] (tick creature state new-state))
+    state
+    (-> state :creatures vals)))
 
 (defn init-creatures [{:keys [width height no-of-creatures speed] :as state}]
   (let [new-creatures

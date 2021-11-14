@@ -3,8 +3,6 @@
     [quil.core :as q]
     [biosphere.tiles :as tiles]))
 
-(def interlacing-factor 200)
-
 (defn make-tile-graphics [width height]
   (let [g (q/create-graphics width height)]
     (q/with-graphics g
@@ -19,11 +17,11 @@
   (q/lerp-color (q/color 240 100 60) (q/color 210 50 100) amount))
 
 (defn land-color [amount]
-  (q/lerp-color (q/color 41 62 55) (q/color 125 60 60)  amount))
+  (q/lerp-color (q/color 41 62 55) (q/color 125 60 60) amount))
 
-(defn tile-color [{:keys [water-level] :as state} {:keys [height max-energy energy] :as tile}]
+(defn tile-color [{:keys [sea-level] :as state} {:keys [height max-energy energy] :as tile}]
   (if (tiles/water? state tile)
-    (water-color (- 1 (* -1 height)))
+    (water-color (/ height sea-level))
     (land-color (/ energy max-energy))))
 
 (defn draw! [{:keys [width height resolution] :as state} {:keys [location] :as tile}]
@@ -36,12 +34,7 @@
     (q/fill (tile-color state tile))
     (q/rect px py pwidth pheight)))
 
-(defn interlaced [factor coll]
-  (let [cyc (mod (q/frame-count) factor)]
-    (->> coll (drop cyc) (take-nth factor))))
-
 (defn draw-tiles! [{:keys [tile-graphic tiles dirty-tiles] :as state}]
-  (when-not (empty dirty-tiles) (q/print-first-n 1 (take 5 dirty-tiles)))
   (q/with-graphics tile-graphic
     (doseq [tile dirty-tiles]
       (draw! state (tiles tile))))

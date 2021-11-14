@@ -7,8 +7,8 @@
   [[x y]]
   [(Math/floor x) (Math/floor y)])
 
-(defn water? [{:keys [water-level]} {:keys [height]}]
-  (neg? height))
+(defn water? [sim-state tile]
+  (< (:height tile) (:sea-level sim-state)))
 
 (defn in-bounds? [{:keys [width height]} [x y]]
   (and
@@ -24,8 +24,8 @@
   (tick [this old-state new-state]
     new-state))
 
-(defn new-tile [{:keys [water-level noise]} [x y]]
-  (let [height (+ -0.8 (* 2 (noise x y)))
+(defn new-tile [{:keys [noise]} [x y]]
+  (let [height (noise x y)
         max-energy (* 10 (inc height))]
     (->Tile [x y] height max-energy max-energy)))
 
