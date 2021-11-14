@@ -20,10 +20,6 @@
     [[x y] location
      x (-> x (/ width) (* (first resolution)))
      y (-> y (/ height) (* (second resolution)))]
-    #_(q/with-fill 255
-        (q/text (str [id])
-          x
-          y))
     (util/with-transform
       {:translate [x y]
        :rotate (q/radians direction)

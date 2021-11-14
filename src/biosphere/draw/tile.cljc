@@ -33,16 +33,8 @@
         py (* y (/ res-y height))
         pwidth (/ res-x width)
         pheight (/ res-y height)]
-    (when (and (zero? x) (= 1 y))
-      (q/print-every-n-millisec 1000 (str "px py" [px py])))
     (q/fill (tile-color state tile))
-    (q/rect px py pwidth pheight)
-    #_(q/with-fill 255
-        (q/text (str [x y height])
-          px
-          py
-          (+ px pwidth)
-          (+ py pheight)))))
+    (q/rect px py pwidth pheight)))
 
 (defn interlaced [factor coll]
   (let [cyc (mod (q/frame-count) factor)]

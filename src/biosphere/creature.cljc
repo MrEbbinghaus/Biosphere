@@ -96,7 +96,6 @@
           :always
           (move))]
 
-    #_(when (zero? id) (q/print-every-n-millisec 1000 [creature new-creature]))
     (if (dead? new-creature)
       (dispose new-state new-creature)
       (-> new-state
