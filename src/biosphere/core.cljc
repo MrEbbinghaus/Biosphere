@@ -3,7 +3,6 @@
             [quil.middleware :as m]
             [biosphere.creature :as creature]
             [biosphere.tiles :as tiles]
-            [biosphere.config :as config]
             [biosphere.draw.core :as draw]
             [biosphere.draw.tile :as draw-tiles]
             [biosphere.draw.creature :as draw-creature]

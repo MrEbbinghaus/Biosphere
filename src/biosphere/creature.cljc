@@ -1,8 +1,7 @@
 (ns biosphere.creature
   (:require [quil.core :as q]
             [biosphere.utils :as utils]
-            [biosphere.tiles :as tiles]
-            [biosphere.config :as config]))
+            [biosphere.tiles :as tiles]))
 
 (def max-energy-intake 1)
 (defrecord Creature
@@ -97,7 +96,7 @@
           :always
           (move))]
 
-    (when (zero? id) (q/print-every-n-millisec 1000 [creature new-creature]))
+    #_(when (zero? id) (q/print-every-n-millisec 1000 [creature new-creature]))
     (if (dead? new-creature)
       (dispose new-state new-creature)
       (-> new-state
