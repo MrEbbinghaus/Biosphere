@@ -2,10 +2,6 @@
   (:require
     [biosphere.protocols :as protocols]))
 
-(def ^:dynamic *noise-scale* 100) ; use something between 10 and 100
-(def ^:dynamic *height-noise* (fn [_x _y] (rand)))
-
-
 (defn pos->id
   "Get the vector index from a `[x y]` 2D world position."
   [[x y]]
@@ -28,8 +24,8 @@
   (tick [this old-state new-state]
     new-state))
 
-(defn tile [{:keys [water-level]} [x y]]
-  (let [height (+ -0.8 (* 2 (*height-noise* (/ x *noise-scale*) (/ y *noise-scale*))))
+(defn new-tile [{:keys [water-level noise]} [x y]]
+  (let [height (+ -0.8 (* 2 (noise x y)))
         max-energy (* 10 (inc height))]
     (->Tile [x y] height max-energy max-energy)))
 
@@ -39,7 +35,7 @@
         (into {} (for [x (range width)
                        y (range height)
                        :let [location [x y]]]
-                   [location (tile state location)]))]
+                   [location (new-tile state location)]))]
     (assoc state
       :tiles tile-map
       :dirty-tiles (set (keys tile-map)))))
