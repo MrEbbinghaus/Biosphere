@@ -5,7 +5,6 @@
            :modules {:app {:entries [biosphere.core]}}
 
            :devtools
-           {:repl-init-ns user
-            :repl-pprint true
+           {:repl-pprint true
             :http-port 9500
             :http-root "resources/public"}}}}

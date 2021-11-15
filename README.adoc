@@ -13,15 +13,9 @@ image::screenshot.png[align="center"]
 - [ ] Develop feature set for creatures
 - [ ] Look into and implement https://towardsdatascience.com/neat-an-awesome-approach-to-neuroevolution-3eca5cc7930f[NEAT]
 
-== Usage
+== Development
 
-Run `lein fig:dev` in your terminal. Wait for a while until you see `Successfully compiled "target/public/cljs-out/biosphere-main.js"`.
-
-You can use this while developing your sketch. Whenever you save your source files the browser will automatically refresh everything, providing you with quick feedback. .
-
-== Publishing your sketch
-
-Before you publish your sketch, run `lein do clean, fig:publish`. This will compile your code and run Google Closure Compiler with advanced optimizations. Take `resources/public/index.html` and `target/public/cljs-out/biosphere-main.js` and upload them to server of your choice.
+Run `clj -M:cljs:dev watch :main` in your terminal. Go to http://localhost:9500.
 
 == License
 
