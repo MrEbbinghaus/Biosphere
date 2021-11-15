@@ -48,6 +48,8 @@
 (defn *d [state x]
   (* (:delta-time state) x))
 
-(defn ^Number radians [^Number degree]
+(def ^:constant deg->rad (/ Math/PI 180))
+
+(defn radians [degree]
   #?(:clj (Math/toRadians degree)
-     :cljs (/ (* degree Math/PI) 180)))
+     :cljs (* degree deg->rad)))

@@ -1,4 +1,4 @@
-name: CI/CD
+name: Deploy to GitHub Pages
 
 on: 
   push:
@@ -9,19 +9,35 @@ jobs:
  build-and-deploy:
    runs-on: ubuntu-latest
    steps:
-     - name: Checkout
+     - name: Checkout 🛎️
        uses: actions/checkout@v2
        with:
          persist-credentials: false
-     - name: Install dependencies
-       run: lein deps
-     - name: Build JS
-       run: lein do clean, fig:publish
-     - name: Copy Files
-       run: mv target/public/cljs-out resources/public/
-     - name: Deploy to GitHub Pages
-       uses: crazy-max/ghaction-github-pages@v1.3.0
+
+     - name: Prepare java
+       uses: actions/setup-java@v2
        with:
-         build_dir: resources/public
-       env:
-         GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+         distribution: 'adopt'
+         java-version: '17'
+
+     - name: Install clojure tools
+       uses: DeLaGuardo/setup-clojure@3.5
+       with:
+         cli: 1.10.3.1029
+
+     - name: Install yarn
+       run: npm install -g yarn
+
+
+
+
+     - name: Install and Build
+       run: |
+         yarn install
+         clojure -M:cljs:dev release :main
+
+     - name: Deploy 🚀
+       uses: JamesIves/github-pages-deploy-action@4.1.5
+       with:
+         branch: gh-pages
+         folder: resources/public

@@ -11,5 +11,9 @@ figwheel_server.log
 .rebel_readline_history
 *.iml
 
-/resources/public/cljs-out/
+/resources/public/js/
 /.clj-kondo/.cache/
+/.cpcache
+/.shadow-cljs
+/node_modules
+yarn-error.log

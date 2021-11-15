@@ -1,0 +1,12 @@
+{
+  "name": "biosphere",
+  "author": "Björn Ebbinghaus (https://github.com/MrEbbinghaus)",
+  "homepage": "https://mrebbinghaus.github.io/Biosphere/",
+  "repository": "github:MrEbbinghaus/Biosphere",
+  "dependencies": {
+    "p5": "^1.4.0"
+  },
+  "devDependencies": {
+    "shadow-cljs": "^2.16.4"
+  }
+}
