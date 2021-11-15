@@ -11,9 +11,11 @@
         <kbd>F11</kbd> for Fullscreen <br>
         Use <code>?seed=1234</code> in the URL for seeded map.
       </p>
+      <button onClick="biosphere.core.toggle_pause()">Pause / Unpause</button>
+      <button onClick="biosphere.core.restart()">Restart</button>
     </div>
     <div id="biosphere"></div>
-    <script src="cljs-out/biosphere-main.js"></script>
+    <script src="js/app.js"></script>
     <script>
       biosphere.core.run_sketch("biosphere", [1536, 864])
     </script>

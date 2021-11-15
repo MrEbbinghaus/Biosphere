@@ -1,1 +1,0 @@
-{"version":3,"file":"\/Users\/bjebb\/Development\/biosphere\/target\/public\/cljs-out\/biosphere\/biosphere\/config.js","sources":["config.cljc"],"lineCount":7,"mappings":";AAAA;;AAGA,AAAKA,yBAAM,CAAA,QAAA;AACX,AAAKC,0BAAO,CAAA,QAAA","names":["biosphere.config\/width","biosphere.config\/height"]}
