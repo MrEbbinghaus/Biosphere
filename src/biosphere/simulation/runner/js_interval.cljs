@@ -1,4 +1,4 @@
-(ns biosphere.simulation.runner.simple-js
+(ns biosphere.simulation.runner.js-interval
   (:require
     [biosphere.simulation.core :as sim]))
 

@@ -3,7 +3,7 @@
     [biosphere.draw.core :as draw]
     [biosphere.simulation.core :as sim]
     [clojure.string :as str]
-    #?(:cljs [biosphere.simulation.runner.simple-js :as js-runner])
+    #?(:cljs [biosphere.simulation.runner.js-timeout :as js-runner])
     [quil.core :as q])
   #?(:cljs (:import [goog Uri])))
 
@@ -24,7 +24,9 @@
   (let [sketch (draw/create-sketch host dimensions current-simulation)]
     (reset! current-sketch sketch)
     #?(:cljs (js-runner/add-runner current-simulation))
-    (sim/start! current-simulation)))
+    #?(:cljs
+       (js/setTimeout #(sim/start! current-simulation) 500))))
+
 
 (defn ^:export restart []
   (swap! current-simulation sim/restart))
