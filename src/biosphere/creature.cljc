@@ -72,7 +72,7 @@
 
 (defn- tick-on-water [creature state]
   (if (on-water? state creature)
-    (-> creature (expend (*d state 5)) (turn 180))
+    (-> creature (expend 5) (turn 180))
     creature))
 
 (defn whats-ahead [state creature]
