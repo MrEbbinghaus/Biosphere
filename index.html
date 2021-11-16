@@ -11,8 +11,15 @@
         <kbd>F11</kbd> for Fullscreen <br>
         Use <code>?seed=1234</code> in the URL for seeded map.
       </p>
-      <button onClick="biosphere.core.toggle_pause()">Pause / Unpause</button>
-      <button onClick="biosphere.core.restart()">Restart</button>
+      <button onclick="biosphere.core.toggle_pause_rendering()">Pause / Unpause Rendering</button>
+      <button onclick="biosphere.core.toggle_pause_simulation()">Pause / Unpause Simulation</button>
+      <button onclick="biosphere.core.restart()">Restart</button>
+      <form onsubmit="biosphere.core.set_tps(document.getElementById('tps-input').value);return false;">
+        <label for="tps-input">Set TPS</label>
+        <input id="tps-input" type="number"
+               min="1"
+               step="1"/>
+      </form>
     </div>
     <div id="biosphere"></div>
     <script src="js/app.js"></script>
