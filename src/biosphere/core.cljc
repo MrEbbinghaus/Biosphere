@@ -31,11 +31,19 @@
 (defn ^:export restart []
   (swap! current-simulation sim/restart))
 
-(defn ^:export toggle-pause []
+(defn ^:export set-tps [tps]
+  (swap! current-simulation assoc :tps-goal tps))
+
+(defn ^:export toggle-pause-rendering []
   (when-let [sketch @current-sketch]
     (if (draw/running? sketch)
       (draw/stop! sketch)
       (draw/start! sketch))))
+
+(defn ^:export toggle-pause-simulation []
+  (if (:running? @current-simulation)
+    (sim/stop! current-simulation)
+    (sim/start! current-simulation)))
 
 (comment
 
