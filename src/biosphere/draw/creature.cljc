@@ -1,28 +1,27 @@
 (ns biosphere.draw.creature
-  (:require [quil.core :as q]
-            [biosphere.utils :as util :include-macros true]
-            #?(:clj [biosphere.creature]
-               :cljs [biosphere.creature :refer [Creature]]))
+  (:require
+    [quil.core :as q]
+    [biosphere.utils :as util :include-macros true]
+    [thi.ng.math.core :as m]
+    [thi.ng.geom.vector :as v]
+    #?(:clj [biosphere.creature]
+       :cljs [biosphere.creature :refer [Creature]]))
   #?(:clj (:import [biosphere.creature Creature])))
-
-(defprotocol Drawable
-  (draw [entity state]))
 
 (defn draw-creature-body! []
   (q/with-fill [0 256 0]
-    (q/triangle
-      -1 1      ; top left
-      0 -1      ; bottom center
-      1  1)))   ; top right
+    (q/with-rotation [q/HALF-PI] ; 90deg
+      (q/triangle
+        -1 1      ; top left
+        0 -1      ; bottom center
+        1  1))))   ; top right
 
-(defn draw! [^Creature {:keys [id location direction] :as creature} {:keys [resolution width height]}]
+(defn draw! [^Creature {:keys [location movement]} {:keys [resolution width height]}]
   (let
-    [[x y] location
-     x (-> x (/ width) (* (first resolution)))
-     y (-> y (/ height) (* (second resolution)))]
+    [screen-position (m/* (m/div location (v/vec2 width height)) (v/vec2 resolution))]
     (util/with-transform
-      {:translate [x y]
-       :rotate (q/radians direction)
+      {:translate screen-position
+       :rotate (get movement 1)
        :scale 4}
       (draw-creature-body!))))
 

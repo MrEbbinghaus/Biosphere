@@ -4,7 +4,7 @@
     [biosphere.simulation.core :as sim]
     [clojure.string :as str]
     #?(:cljs [biosphere.simulation.runner.js-timeout :as js-runner])
-    [quil.core :as q])
+    [taoensso.tufte :as tufte])
   #?(:cljs (:import [goog Uri])))
 
 #?(:cljs
@@ -19,17 +19,24 @@
   (atom (sim/new-simulation {:seed #?(:clj nil
                                       :cljs (:seed (get-query)))})))
 
+(defonce stats-accumulator
+  (tufte/add-accumulating-handler! {:ns-pattern "*"}))
+
 ; this function is called in index.html
 (defn ^:export run-sketch [host dimensions]
   (let [sketch (draw/create-sketch host dimensions current-simulation)]
     (reset! current-sketch sketch)
-    #?(:cljs (js-runner/add-runner current-simulation))
+    #?(:cljs (js-runner/add-runner current-simulation {:tps 60}))
     #?(:cljs
        (js/setTimeout #(sim/start! current-simulation) 500))))
 
+(defn ^:export profile
+  ([] (tufte/format-grouped-pstats @stats-accumulator))
+  ([key] (tufte/format-grouped-pstats (select-keys @stats-accumulator #{(keyword key)}))))
 
 (defn ^:export restart []
-  (swap! current-simulation sim/restart))
+  (swap! current-simulation sim/restart)
+  @stats-accumulator)
 
 (defn ^:export set-tps [tps]
   (swap! current-simulation assoc :tps-goal tps))
@@ -53,6 +60,7 @@
     (q/state-atom))
 
   (sim/start! current-simulation)
+  (swap! current-simulation assoc :tps-goal 60)
   (sim/stop! current-simulation)
 
   (draw/start! @current-sketch)
@@ -63,9 +71,3 @@
     (dissoc @(q/state-atom) :sim-state))
 
   _)
-
-
-; Create simulation
-; Give sim to quil
-; start simulation
-; start rendering

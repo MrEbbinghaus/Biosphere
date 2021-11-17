@@ -2,14 +2,15 @@
   (:require
     [biosphere.tiles :as tiles]
     [biosphere.creature :as creature]
-    [biosphere.simulation.noise :as noise]))
+    [biosphere.simulation.noise :as noise]
+    [taoensso.tufte :as tufte]))
 
 (def defaults
   {:sea-level 0.48 ; 0 => no water, 1 => everything water
    :no-of-creatures 100
    :speed 0.25 ; units per second
-   :width 256 ; width in tiles
-   :height 144}) ; height in tiles
+   :width 512 ; width in tiles
+   :height 288}) ; height in tiles
 
 (defn new-simulation [{:keys [seed] :as params}]
   (let [seed (or seed (rand-int 1000))]
@@ -34,11 +35,13 @@
       :last-update current-ms)))
 
 (defn tick [state]
-  (-> state
-    (update :tick inc)
-    update-delta
-    tiles/update-tiles
-    creature/update-creatures))
+  (tufte/profile {:id ::tick}
+    (tufte/p ::tick
+      (-> state
+        (update :tick inc)
+        update-delta
+        tiles/update-tiles
+        creature/update-creatures))))
 
 (defn start [simulation]
   (assoc simulation :running? true))
@@ -56,3 +59,7 @@
 
 (defn restart [simulation]
   (new-simulation (assoc simulation :tick 0)))
+
+#_(defn set-tps [simulation tps]
+    (if (:running? simulation)
+      (if (< tps 1))))

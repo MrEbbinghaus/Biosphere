@@ -1,14 +1,16 @@
 (ns biosphere.tiles
   (:require
-    [biosphere.protocols :as protocols]))
+    [biosphere.protocols :as protocols]
+    [thi.ng.geom.vector :as v]
+    [taoensso.tufte :as tufte :refer [pspy]]))
 
 (defn pos->id
   "Get the vector index from a `[x y]` 2D world position."
   [[x y]]
-  [(Math/floor x) (Math/floor y)])
+  (v/vec2 (Math/floor x) (Math/floor y)))
 
 (defn water? [sim-state tile]
-  (< (:height tile) (:sea-level sim-state)))
+  (<= (:height tile) (:sea-level sim-state)))
 
 (defn in-bounds? [{:keys [width height]} [x y]]
   (and
@@ -27,7 +29,7 @@
 (defn new-tile [{:keys [noise]} [x y]]
   (let [height (noise x y)
         max-energy (* 10 (inc height))]
-    (->Tile [x y] height max-energy max-energy)))
+    (->Tile (v/vec2 x y) height max-energy max-energy)))
 
 (defn init-tiles [state]
   (let [{:keys [width height]} state

@@ -14,9 +14,9 @@ Input / Output Neurons for the brain of the creatures.
 
 
 == Output
-- Forward
-- Backward
-- Turn left
+- Accelerate
+- Decelerate
+- Turn left (degree?)
 - Turn right
 - Eat
 - Reproduce
