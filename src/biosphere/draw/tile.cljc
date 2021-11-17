@@ -16,13 +16,19 @@
 (defn water-color [amount]
   (q/lerp-color (q/color 240 100 60) (q/color 210 50 100) amount))
 
-(defn land-color [amount]
+(defn energy-color [amount]
   (q/lerp-color (q/color 41 62 55) (q/color 125 60 60) amount))
+
+(defn land-color [amount]
+  (q/lerp-color (q/color 69 66 100) (q/color 18 122 191) amount))
 
 (defn tile-color [{:keys [sea-level] :as state} {:keys [height max-energy energy] :as tile}]
   (if (tiles/water? state tile)
     (water-color (/ height sea-level))
-    (land-color (/ energy max-energy))))
+    (q/lerp-color
+      (land-color (/ (- height sea-level) sea-level))
+      (energy-color (/ energy max-energy))
+      0.3)))
 
 (defn draw! [{:keys [width height resolution] :as state} {:keys [location] :as tile}]
   (let [[x y] location
