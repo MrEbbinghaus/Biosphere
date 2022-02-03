@@ -21,7 +21,7 @@ jobs:
          java-version: '17'
 
      - name: Install clojure tools
-       uses: DeLaGuardo/setup-clojure@3.5
+       uses: DeLaGuardo/setup-clojure@3.7
        with:
          cli: 1.10.3.1029
 
@@ -34,7 +34,7 @@ jobs:
          clojure -M:cljs:dev release :main
 
      - name: Deploy 🚀
-       uses: JamesIves/github-pages-deploy-action@4.1.5
+       uses: JamesIves/github-pages-deploy-action@v4
        with:
          branch: gh-pages
          folder: resources/public
