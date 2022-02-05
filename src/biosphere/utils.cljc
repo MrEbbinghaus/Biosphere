@@ -53,3 +53,7 @@
 (defn radians [degree]
   #?(:clj (Math/toRadians degree)
      :cljs (* degree deg->rad)))
+
+(defn now []
+  #?(:cljs (js/window.performance.now)
+     :clj (System/currentTimeMillis)))

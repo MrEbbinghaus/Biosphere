@@ -3,14 +3,11 @@
     [biosphere.tiles :as tiles]
     [biosphere.creature :as creature]
     [biosphere.simulation.noise :as noise]
-    [taoensso.tufte :as tufte]))
-
-(defn now []
-  #?(:cljs (js/window.performance.now)
-     :clj (System/currentTimeMillis)))
+    [taoensso.tufte :as tufte]
+    [biosphere.utils :as utils]))
 
 (defn update-delta [state]
-  (let [current-ms (now)]
+  (let [current-ms (utils/now)]
     (assoc state :delta-time
       (if-let [last-update-ms (:last-update state)]
         (/ (- current-ms last-update-ms) 1000)
