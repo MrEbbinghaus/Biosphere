@@ -1,6 +1,4 @@
-(ns biosphere.simulation.runner.js-timeout
-  (:require
-    [biosphere.simulation.core :as sim]))
+(ns biosphere.simulation.runner.js-timeout)
 
 (defn add-runner
   ([simulation]
@@ -8,7 +6,7 @@
   ([simulation {:keys [tps] :or {tps 10}}]
    (letfn [(tick! []
              (when (:running? @simulation)
-               (swap! simulation sim/tick)
+               (swap! simulation #((:tick-fn %) %))
                (js/setTimeout tick! (/ 1000 (:tps-goal @simulation)))))
            (start-ticking []
              (if (:running @simulation)

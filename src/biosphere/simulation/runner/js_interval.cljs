@@ -1,6 +1,4 @@
-(ns biosphere.simulation.runner.js-interval
-  (:require
-    [biosphere.simulation.core :as sim]))
+(ns biosphere.simulation.runner.js-interval)
 
 (defn- stop! [simulation]
   (when-let [id (::id  @simulation)]
@@ -10,7 +8,7 @@
 
 (defn tick! [simulation]
   (if (:running? @simulation)
-    (swap! simulation sim/tick)
+    (swap! simulation #((:tick-fn %) %))
     (stop! simulation)))
 
 (defn add-runner
