@@ -4,8 +4,8 @@
     [biosphere.utils :as util :include-macros true]
     [thi.ng.math.core :as m]
     [thi.ng.geom.vector :as v]
-    #?(:clj [biosphere.creature]
-       :cljs [biosphere.creature :refer [Creature]]))
+    #?(:clj [biosphere.creature :as c]
+       :cljs [biosphere.creature :as c :refer [Creature]]))
   #?(:clj (:import [biosphere.creature Creature])))
 
 (defn draw-creature-body! []
@@ -16,12 +16,16 @@
         0 -1      ; bottom center
         1  1))))   ; top right
 
-(defn draw! [^Creature {:keys [location movement]} {:keys [resolution width height]}]
-  (let
-    [screen-position (m/* (m/div location (v/vec2 width height)) (v/vec2 resolution))]
+(defn screen-position [{:keys [resolution width height]} location]
+  (-> location
+    (m/div (v/vec2 width height))
+    (m/* (v/vec2 resolution))))
+
+(defn draw! [^Creature {:keys [location] :as creature} {:keys [tick-fraction] :as state}]
+  (let [interpolated-location (m/mix location (c/one-step-ahead creature) tick-fraction)]
     (util/with-transform
-      {:translate screen-position
-       :rotate (get movement 1)
+      {:translate (screen-position state interpolated-location)
+       :rotate (c/rotation creature)
        :scale 4}
       (draw-creature-body!))))
 

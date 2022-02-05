@@ -18,6 +18,9 @@
    energy
    max-energy])
 
+(defn rotation [creature]
+  (get-in creature [:movement 1]))
+
 (defn- rotate
   "Adds `x` rads to the `angle` and normalizes the result to [0 2π]."
   [angle x]

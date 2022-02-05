@@ -19,13 +19,15 @@
 
 (defn draw-tick! [state]
   (q/text (str "Tick: " (:tick state)
-            "\nTPS: " (Math/round (/ 1 (:delta-time state)))
-            "\nDelta: " (/ (Math/round (* 100000 (:delta-time state))) 100) "ms")
+            "\nTPS: " (Math/floor (/ 1000 (:delta-time state)))
+            "\nDelta: " (Math/floor (:delta-time state)) "ms")
     2 36))
 
 (defn draw-state [state]
   (if-let [sim-state (some-> state :sim-state deref)]
-    (let [state (merge sim-state state)]
+    (let [state (merge sim-state state)
+          ms-since-last-tick (- (util/now) (:last-update state))
+          state (assoc state :tick-fraction (/ ms-since-last-tick (:delta-time state)))]
       ; Clear the sketch by filling it with light-grey color.
       (q/background 230)
       (tiles/draw-tiles! state)
@@ -47,7 +49,7 @@
 (defn setup [simulation-state]
   (let [seed (or #?(:cljs (:seed (get-query)))
                (gen-map-seed))]
-    (q/frame-rate 60)
+    (q/frame-rate 120)
     (q/color-mode :hsb)
     (q/noise-seed seed)
     ; setup function returns initial state.

@@ -10,8 +10,8 @@
   (let [current-ms (utils/now)]
     (assoc state :delta-time
       (if-let [last-update-ms (:last-update state)]
-        (/ (- current-ms last-update-ms) 1000)
-        1)
+        (- current-ms last-update-ms)
+        1000)
       :last-update current-ms)))
 
 (defn tick [state]
