@@ -1,22 +1,32 @@
 = Features
 
+Attributes/Traits of a creature.
 Input / Output Neurons for the brain of the creatures.
 
+== Traits (Don't change through the live time of a creature and do not influence behavior)
+- Acceleration
+- Turning Speed
+- Size / Max Energy
+- Color (R/G/B)
 
-== Input
+== Sensors (Influence Behavior)
+=== Internal Sensors (Sensors not influenced by the world)
+- Age
+- Health/Energy ("Hunger")
+- Speed
+- Heading
+    - Could lead to behavior like. "Go south, when you have enough energy to reproduce."
+
+=== External Sensors (Sensors influenced by the world)
 - On Water?
-- Nutritional value
-- Temperature
-- Hunger
-- (Direction)
-- Something like eyes?
-- Pheromones?
+- Height
+- Energy on tile
 
-
-== Output
+== Output (What the creature does)
+- Do nothing
 - Accelerate
 - Decelerate
-- Turn left (degree?)
+- Turn left
 - Turn right
 - Eat
-- Reproduce
+- Reproduce (lay egg? -> asexual)
