@@ -26,7 +26,7 @@
 (defn ^:export run-sketch [host dimensions]
   (let [sketch (draw/create-sketch host dimensions current-simulation)]
     (reset! current-sketch sketch)
-    #?(:cljs (js-runner/add-runner current-simulation {:tps 60}))
+    #?(:cljs (js-runner/add-runner current-simulation {:tps 10}))
     #?(:cljs
        (js/setTimeout #(sim/start! current-simulation) 500))))
 

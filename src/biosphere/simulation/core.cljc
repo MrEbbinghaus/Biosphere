@@ -40,7 +40,7 @@
 (def defaults
   {:sea-level 0.48 ; 0 => no water, 1 => everything water
    :no-of-creatures 100
-   :speed 0.25 ; units per second
+   :speed 1 ; units per second
    :width 512 ; width in tiles
    :height 288
    :tick-fn tick
