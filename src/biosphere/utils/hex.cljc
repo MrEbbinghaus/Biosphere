@@ -1,6 +1,8 @@
 (ns biosphere.utils.hex
   (:require [clojure.math :as math]))
 
+(def ^:const SQRT3 (math/sqrt 3))
+
 ;; Tiles are hexagons with cube coordinates
 ;; https://www.redblobgames.com/grids/hexagons/#coordinates-cube
 ;; [q, r, s]
@@ -31,14 +33,14 @@
 (defn add
   "Adds vectors to a hex."
   ([hex v] (mapv + hex v))
-  ([hex & vs]
-   (apply mapv + hex vs)))
+  ([hex v & vs]
+   (reduce add (add hex v) vs)))
 
 
 (defn neighbours
   "Returns the coordinates of the surrounding tiles."
   [hex]
-  (map #(add hex %) (vals direction)))
+  (map #(add hex %) direction))
 
 
 (defn neighbour
@@ -93,8 +95,8 @@
   (let [q (nth hex 0)
         r (nth hex 1)]
     [(* size (/ 3 2) q)
-     (* size (+ (* (/ (math/sqrt 3.0) 2) q)
-                (* (math/sqrt 3.0) r)))]))
+     (* size (+ (* (/ SQRT3 2) q)
+                (* SQRT3 r)))]))
 
 
 (defn pixel->hex
@@ -103,7 +105,7 @@
   (let [x (nth pixel 0)
         y (nth pixel 1)
         q (-> (/ 2 3) (* x) (/ size))
-        r (-> (+ (* (/ -1 3) x) (* (/ (math/sqrt 3.0) 3) y))
+        r (-> (+ (* (/ -1 3) x) (* (/ SQRT3 3) y))
             (/ size))] ; (-1./3 * point.x  +  sqrt(3)/3 * point.y) / size
     (round (axial->cube [q r]))))
 
@@ -111,3 +113,10 @@
 (->> (direction 2)
   (hex->pixel 10)
   (pixel->hex 10))
+
+(defn hex-map [size]
+  (for [q (range (- size) (inc size))
+        r (range (- size) (inc size))
+        s (range (- size) (inc size))
+        :when (zero? (+ q r s))]
+    (add [0 0 0] [q r s])))
