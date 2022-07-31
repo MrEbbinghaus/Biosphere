@@ -14,17 +14,12 @@
       (q/triangle
         -1 1      ; top left
         0 -1      ; bottom center
-        1  1))))   ; top right
+        1  1))))  ; top right
 
-(defn screen-position [{:keys [resolution width height]} location]
-  (-> location
-    (m/div (v/vec2 width height))
-    (m/* (v/vec2 resolution))))
-
-(defn draw! [^Creature {:keys [location] :as creature} {:keys [tick-fraction] :as state}]
+(defn draw! [^Creature {:keys [location id] :as creature} {:keys [tick-fraction] :as state}]
   (let [interpolated-location (m/mix location (c/one-step-ahead creature) tick-fraction)]
     (util/with-transform
-      {:translate (screen-position state interpolated-location)
+      {:translate interpolated-location
        :rotate (c/rotation creature)
        :scale 4}
       (draw-creature-body!))))
@@ -40,6 +35,7 @@
 (defn draw-creatures! [{:keys [creature-graphic creatures] :as state}]
   (q/with-graphics creature-graphic
     (q/clear)
-    (run! (fn [^Creature creature] (draw! creature state)) (vals creatures)))
+    (q/with-translation [(/ (q/width) 2) (/ (q/height) 2)]
+      (run! (fn [^Creature creature] (draw! creature state)) (vals creatures))))
 
   (q/image creature-graphic 0 0))

@@ -1,7 +1,7 @@
 (ns biosphere.utils.hex
   (:require [clojure.math :as math]))
 
-(def ^:const SQRT3 (math/sqrt 3))
+(def ^:const SQRT3 (math/sqrt 3.0))
 
 ;; Tiles are hexagons with cube coordinates
 ;; https://www.redblobgames.com/grids/hexagons/#coordinates-cube
@@ -88,6 +88,15 @@
       :else
       [q r (third-component q r)])))
 
+(defn height
+  "Given the length of a hex side (`size`), returns the height of the flat-topped hex"
+  [size]
+  (* SQRT3 size))
+
+(defn width
+  "Given the length of a hex side (`size`), returns the height of the flat-topped hex"
+  [size]
+  (* size 2))
 
 (defn hex->pixel
   "Converts a hex coordinate to a pixel coordinate."

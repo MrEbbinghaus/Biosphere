@@ -48,12 +48,6 @@
 (defn *d [state x]
   (* (:delta-time state) x))
 
-(def ^:constant deg->rad (/ Math/PI 180))
-
-(defn radians [degree]
-  #?(:clj (Math/toRadians degree)
-     :cljs (* degree deg->rad)))
-
 (defn now []
   #?(:cljs (js/window.performance.now)
      :clj (System/currentTimeMillis)))

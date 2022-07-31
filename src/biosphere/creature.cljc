@@ -1,13 +1,11 @@
 (ns biosphere.creature
   (:require
-    [biosphere.tiles :as tiles]
-    [thi.ng.geom.vector :as v]
+    [biosphere.hex-tiles :as tiles]
+    [taoensso.tufte :as tufte :refer [pspy]]
     [thi.ng.geom.core :as geom]
-    [thi.ng.math.core :as m]
-    [taoensso.tufte :as tufte :refer [pspy]]))
+    [thi.ng.geom.vector :as v]
+    [thi.ng.math.core :as m]))
 
-
-(def ^:dynamic *cache* {})
 
 (def max-energy-intake 1)
 (defrecord Creature
@@ -59,9 +57,7 @@
 
 
 (defn current-tile [state creature]
-  (or
-    (:current-tile *cache*)
-    (get-in state [:tiles (tiles/pos->id (:location creature))])))
+  (get-in state [:tiles (tiles/pos->id state (:location creature))]))
 
 (defn on-water?
   "Check if creature is on water."

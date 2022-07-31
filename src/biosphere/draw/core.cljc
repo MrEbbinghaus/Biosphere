@@ -1,7 +1,7 @@
 (ns biosphere.draw.core
   (:require
     [biosphere.draw.creature :as creature]
-    [biosphere.draw.tile :as tiles]
+    [biosphere.draw.hex-tile :as tiles]
     [biosphere.utils :as util]
     [clojure.string :as str]
     [quil.core :as q]
@@ -82,6 +82,7 @@
 (defn create-sketch [host [width height] simulation-state]
   (q/sketch
     #?@(:cljs [:host host])
+    :renderer :p2d
     :size [width height]
     ; setup function called only once, during sketch initialization.
     :setup #(setup simulation-state)
@@ -92,7 +93,7 @@
     ; This sketch uses functional-mode middleware.
     ; Check quil wiki for more info about middlewares and particularly
     ; fun-mode.
-    :middleware [m/fun-mode]))
+    :middleware [m/fun-mode #_m/navigation-2d]))
 
 (defn stop! [sketch]
   #?(:cljs (js/console.info "Stop rendering"))

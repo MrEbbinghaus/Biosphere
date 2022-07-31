@@ -1,10 +1,10 @@
 (ns biosphere.simulation.core
   (:require
-    [biosphere.tiles :as tiles]
     [biosphere.creature :as creature]
+    [biosphere.hex-tiles :as tiles]
     [biosphere.simulation.noise :as noise]
-    [taoensso.tufte :as tufte]
-    [biosphere.utils :as utils]))
+    [biosphere.utils :as utils]
+    [taoensso.tufte :as tufte]))
 
 (defn update-delta [state]
   (let [current-ms (utils/now)]
@@ -41,11 +41,12 @@
   {:sea-level 0.48 ; 0 => no water, 1 => everything water
    :no-of-creatures 100
    :speed 1 ; units per second
-   :width 512 ; width in tiles
-   :height 288
+   :tile-size 10
+   :width 512 ; width in units
+   :height 288 ; height in units
    :tick-fn tick
    :start-fn start
-   :stop-fn stop}) ; height in tiles
+   :stop-fn stop})
 
 (defn new-simulation [{:keys [seed] :as params}]
   (let [seed (or seed (rand-int 1000))]
@@ -53,7 +54,7 @@
       (merge params)
       (assoc
         :seed seed
-        :noise (noise/simplex-generator seed 100)) ; larger scale = zoom in
+        :noise (noise/simplex-generator seed 10)) ; larger scale = zoom in
       tiles/init-tiles
       creature/init-creatures)))
 

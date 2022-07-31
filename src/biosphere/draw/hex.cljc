@@ -3,7 +3,7 @@
     [biosphere.utils.hex :as hex]
     [quil.core :as q]))
 
-(defn- draw-flat-top-hex! []
+(defn draw-flat-top-hex! []
   (q/begin-shape)
   (q/vertex 1 0)
   (q/vertex 0.5 0.8660254037844386)
