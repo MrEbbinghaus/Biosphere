@@ -145,17 +145,11 @@
         (tick-on-water state)
         move))))
 
-(defn- map-vals [m f]
-  (persistent!
-    (reduce-kv (fn [acc k v] (assoc! acc k (f v)))
-      (transient m)
-      m)))
-
 (defn update-creatures [state]
   (tufte/profile {:id :update-creatures}
     (let [thoughtful-creatures (mapv #(think state %) (-> state :creatures vals))
           new-state (reduce profile-execute state thoughtful-creatures)]
-      (update new-state :creatures map-vals tick-internals new-state))))
+      (update new-state :creatures update-vals #(tick-internals % new-state)))))
 
 (defn init-creatures [{:keys [width height no-of-creatures speed] :as state}]
   (let [new-creatures

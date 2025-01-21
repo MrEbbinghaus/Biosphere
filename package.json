@@ -4,9 +4,10 @@
   "homepage": "https://mrebbinghaus.github.io/Biosphere/",
   "repository": "github:MrEbbinghaus/Biosphere",
   "dependencies": {
-    "p5": "^1.4.1"
+    "p5": "^1.7.0"
   },
   "devDependencies": {
-    "shadow-cljs": "^2.19.5"
-  }
+    "shadow-cljs": "^2.28.20"
+  },
+  "packageManager": "yarn@4.6.0"
 }
