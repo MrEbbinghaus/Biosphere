@@ -1,0 +1,19 @@
+{:tasks
+ {cljs:clean
+  {:requires ([babashka.fs :as fs])
+   :task (do
+           (fs/delete-tree ".shadow-cljs")
+           (fs/delete-tree "resources/public/js")
+           (fs/delete-tree "resources/public/workspaces/js"))}
+
+  cljs:install
+  {:task (shell "yarn install")}
+
+  cljs:deploy
+  {:task (clojure "-M:cljs:dev" 'release :main)}
+
+  dev {:task (run '-dev {:parallel true})}
+  -dev {:depends [dev:cljs]}
+
+  dev:cljs
+  {:task (clojure "-M:cljs:dev" 'watch :main)}}}
